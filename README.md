@@ -3,6 +3,7 @@
 A feature-rich Home Assistant card for monitoring and controlling your P1S 3D printer. Get real-time updates on print progress, temperatures, material status, and more with a sleek, user-friendly interface.
 
 ![PrintWatch Card Screenshot](assets/printwatch-card.png)
+![PrintWatch Dark Mode](assets/dark-mode.png)
 
 ## Features
 
@@ -15,6 +16,7 @@ A feature-rich Home Assistant card for monitoring and controlling your P1S 3D pr
 - 🎛️ Speed profile monitoring
 - 🖼️ Print preview image
 - ⚡ Local API support
+- 🌑 Dark Mode
 
 ## Prerequisites
 

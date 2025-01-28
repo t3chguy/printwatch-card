@@ -65,8 +65,12 @@ class PrintWatchCard extends HTMLElement {
     }
   }
 
+  _isPrinting(hass) {
+    const printStatus = hass.states[this.config.print_status_entity]?.state;
+    return ['running', 'pause'].includes(printStatus);
+  }
+
   _updateUI(hass) {
-  
     const entities = {
       name: this.config.printer_name || 'Unnamed Printer',
       status: hass.states[this.config.print_status_entity]?.state || 'idle',
@@ -80,7 +84,8 @@ class PrintWatchCard extends HTMLElement {
       nozzleTemp: parseFloat(hass.states[this.config.nozzle_temp_entity]?.state || '0'),
       speedProfile: hass.states[this.config.speed_profile_entity]?.attributes?.modifier || 100,
       externalSpoolType: hass.states[this.config.external_spool_entity]?.state || 'Unknown',
-      externalSpoolColor: hass.states[this.config.external_spool_entity]?.attributes?.color || '#E0E0E0'
+      externalSpoolColor: hass.states[this.config.external_spool_entity]?.attributes?.color || '#E0E0E0',
+      print_status_entity: this.config.print_status_entity
     };
 
     // Determine material display (AMS or External Spool)
@@ -110,8 +115,6 @@ class PrintWatchCard extends HTMLElement {
         empty: false
       }];
     }
-    
-
 
     if (!this.content) {
       this.shadowRoot.innerHTML = `
@@ -129,16 +132,32 @@ class PrintWatchCard extends HTMLElement {
     this.content.querySelector('.printer-name').textContent = entities.name;
     this.content.querySelector('.status').textContent = entities.status;
     this.content.querySelector('.camera-label').textContent = entities.currentStage;
-    this.content.querySelector('.print-details h3').textContent = entities.taskName;
-    this.content.querySelector('.print-details div:first-of-type').textContent = 
-      `Printed layers: ${entities.currentLayer}/${entities.totalLayers}`;
-    
-    this.content.querySelector('.remaining').textContent = 
-      `Time left: ${this.formatters.formatDuration(entities.remainingTime)}`;
-    this.content.querySelector('.completion').textContent = 
-      `Done at: ${this.formatters.formatEndTime(entities.remainingTime, hass)}`;
-    
-    this.content.querySelector('.progress-fill').style.width = `${entities.progress}%`;
+
+    const printStatus = this.content.querySelector('.print-status');
+    const idleStatus = this.content.querySelector('.idle-status');
+
+    if (this._isPrinting(hass)) {
+      if (idleStatus) idleStatus.style.display = 'none';
+      if (printStatus) {
+        printStatus.style.display = 'block';
+        this.content.querySelector('.print-details h3').textContent = entities.taskName;
+        this.content.querySelector('.print-details div:first-of-type').textContent = 
+          `Printed layers: ${entities.currentLayer}/${entities.totalLayers}`;
+        
+        this.content.querySelector('.remaining').textContent = 
+          `Time left: ${this.formatters.formatDuration(entities.remainingTime)}`;
+        this.content.querySelector('.completion').textContent = 
+          `Done at: ${this.formatters.formatEndTime(entities.remainingTime, hass)}`;
+        
+        this.content.querySelector('.progress-fill').style.width = `${entities.progress}%`;
+        
+        const pauseButton = this.content.querySelector('.btn-pause');
+        pauseButton.textContent = entities.status === 'pause' ? 'Resume' : 'Pause';
+      }
+    } else {
+      if (printStatus) printStatus.style.display = 'none';
+      if (idleStatus) idleStatus.style.display = 'flex';
+    }
     
     const temps = this.content.querySelectorAll('.temp-value');
     temps[0].textContent = `${entities.bedTemp}°`;
@@ -152,9 +171,6 @@ class PrintWatchCard extends HTMLElement {
       circle.style.backgroundColor = slot.color;
       type.textContent = slot.type;
     });
-
-    const pauseButton = this.content.querySelector('.btn-pause');
-    pauseButton.textContent = entities.status === 'pause' ? 'Resume' : 'Pause';
     
     const lightButton = this.content.querySelector('.icon-button:first-of-type');
     const fanButton = this.content.querySelector('.icon-button:last-of-type');
@@ -169,20 +185,24 @@ class PrintWatchCard extends HTMLElement {
     const pauseButton = this.content.querySelector('.btn-pause');
     const stopButton = this.content.querySelector('.btn-stop');
     
-    pauseButton.addEventListener('click', () => {
-      const isPaused = hass.states[this.config.print_status_entity]?.state === 'pause';
-      if (!isPaused) {
-        const pauseDialog = this.shadowRoot.querySelector('#pauseDialog');
-        pauseDialog.show();
-      } else {
-        hass.callService('button', 'press', { entity_id: this.config.resume_button_entity });
-      }
-    });
+    if (pauseButton) {
+      pauseButton.addEventListener('click', () => {
+        const isPaused = hass.states[this.config.print_status_entity]?.state === 'pause';
+        if (!isPaused) {
+          const pauseDialog = this.shadowRoot.querySelector('#pauseDialog');
+          pauseDialog.show();
+        } else {
+          hass.callService('button', 'press', { entity_id: this.config.resume_button_entity });
+        }
+      });
+    }
     
-    stopButton.addEventListener('click', () => {
-      const stopDialog = this.shadowRoot.querySelector('#stopDialog');
-      stopDialog.show();
-    });
+    if (stopButton) {
+      stopButton.addEventListener('click', () => {
+        const stopDialog = this.shadowRoot.querySelector('#stopDialog');
+        stopDialog.show();
+      });
+    }
   }
 
   _handlePauseDialog(e, hass) {

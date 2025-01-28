@@ -1,9 +1,9 @@
 export const styles = `
   .card {
-    background: white;
-    border-radius: 12px;
+    background: var(--ha-card-background, var(--card-background-color, white));
+    border-radius: var(--ha-card-border-radius, 12px);
     padding: 16px;
-    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: var(--primary-font-family, -apple-system, BlinkMacSystemFont, sans-serif);
   }
   .header {
     display: flex;
@@ -14,10 +14,10 @@ export const styles = `
   .printer-name {
     font-size: 24px;
     font-weight: 500;
-    color: #9e9e9e;
+    color: var(--primary-text-color);
   }
   .status {
-    color: #4CAF50;
+    color: var(--state-active-color, #4CAF50);
     font-size: 16px;
     font-weight: 500;
   }
@@ -32,17 +32,17 @@ export const styles = `
     padding: 8px;
     border-radius: 50%;
     cursor: pointer;
-    color: #9e9e9e;
+    color: var(--secondary-text-color);
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
   }
   .icon-button:hover {
-    background: #f5f5f5;
+    background: var(--secondary-background-color);
   }
   .icon-button.active {
-    color: #4CAF50;
+    color: var(--state-active-color, #4CAF50);
   }
   .icon-button ha-icon {
     width: 24px;
@@ -51,7 +51,7 @@ export const styles = `
   .camera-feed {
     width: 100%;
     height: 240px;
-    background: #f5f5f5;
+    background: var(--secondary-background-color);
     border-radius: 12px;
     margin-bottom: 16px;
     position: relative;
@@ -60,27 +60,26 @@ export const styles = `
     position: absolute;
     top: 16px;
     left: 16px;
-    color: white;
-    background: rgba(0,0,0,0.7);
+    color: var(--text-primary-color, white);
+    background: var(--ha-card-background, rgba(0,0,0,0.7));
     padding: 8px 16px;
     border-radius: 6px;
     font-size: 16px;
   }
   .print-status {
-    background: white;
+    background: var(--ha-card-background);
     padding: 16px;
     margin-bottom: 16px;
   }
   .not-printing {
-    background: white;
+    background: var(--ha-card-background);
     padding: 24px;
     margin-bottom: 16px;
     text-align: center;
     border-radius: 8px;
-
   }
   .not-printing .message {
-    color: #9e9e9e;
+    color: var(--secondary-text-color);
     font-size: 16px;
     font-weight: 500;
   }
@@ -92,7 +91,7 @@ export const styles = `
   .preview-image {
     width: 80px;
     height: 80px;
-    background: #f5f5f5;
+    background: var(--secondary-background-color);
     border-radius: 4px;
     overflow: hidden;
   }
@@ -102,36 +101,36 @@ export const styles = `
     object-fit: cover;
   }
   .print-details {
-    color: #333333;
+    color: var(--primary-text-color);
   }
   .print-details h3 {
     margin: 0 0 8px 0;
     font-size: 16px;
-    color: #1a1a1a;
+    color: var(--primary-text-color);
   }
   .time-info {
     display: flex;
     justify-content: space-between;
     margin: 4px 0;
-    color: #666;
+    color: var(--secondary-text-color);
     font-size: 14px;
   }
   .time-info .remaining {
-    color: #1a1a1a;
+    color: var(--primary-text-color);
   }
   .time-info .completion {
-    color: #666;
+    color: var(--secondary-text-color);
   }
   .progress-bar {
     height: 4px;
-    background: #e0e0e0;
+    background: var(--secondary-background-color);
     border-radius: 2px;
     margin: 8px 0;
   }
   .progress-fill {
     width: 0%;
     height: 100%;
-    background: #43a047;
+    background: var(--state-active-color, #43a047);
     border-radius: 2px;
     transition: width 0.3s;
   }
@@ -149,12 +148,12 @@ export const styles = `
     cursor: pointer;
   }
   .btn-pause {
-    background: #f0f0f0;
-    color: #333;
+    background: var(--secondary-background-color);
+    color: var(--primary-text-color);
   }
   .btn-stop {
-    background: #e53935;
-    color: white;
+    background: var(--error-color, #e53935);
+    color: var(--text-primary-color, white);
   }
   .temperatures {
     display: flex;
@@ -171,11 +170,11 @@ export const styles = `
     left: 20%;
     right: 20%;
     height: 1px;
-    background-color: #e0e0e0;
+    background-color: var(--divider-color);
   }
   .temp-item {
     text-align: center;
-    color: #333333;
+    color: var(--primary-text-color);
     flex: 1;
     display: flex;
     flex-direction: column;
@@ -203,11 +202,11 @@ export const styles = `
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    border: 1px solid #e0e0e0;
+    border: 1px solid var(--divider-color);
   }
   .material-type {
     font-size: 12px;
-    color: #333333;
+    color: var(--primary-text-color);
     text-align: center;
   }
 

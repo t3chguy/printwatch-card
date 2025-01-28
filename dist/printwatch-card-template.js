@@ -58,31 +58,37 @@ export const cardTemplate = (entities, hass, amsSlots, formatters) => `
            alt="Camera Feed" />
     </div>
     
-    <div class="print-status">
-      <div class="print-preview">
-        <div class="preview-image">
-          <img src="${hass.states[entities.cover_image_entity]?.attributes?.entity_picture || ''}" 
-               alt="Print Preview" />
-        </div>
-        <div class="print-details">
-          <h3>${entities.taskName}</h3>
-          <div>Printed layers: ${entities.currentLayer}/${entities.totalLayers}</div>
-          <div class="time-info">
-            <span class="remaining">Time left: ${formatters.formatDuration(entities.remainingTime)}</span>
-            <span class="completion">Done at: ${formatters.formatEndTime(entities.remainingTime, hass)}</span>
+    ${entities.isPrinting ? `
+      <div class="print-status">
+        <div class="print-preview">
+          <div class="preview-image">
+            <img src="${hass.states[entities.cover_image_entity]?.attributes?.entity_picture || ''}" 
+                 alt="Print Preview" />
           </div>
-          <div class="progress-bar">
-            <div class="progress-fill" style="width: ${entities.progress}%"></div>
-          </div>
-          <div class="controls">
-            <button class="btn btn-pause">
-              ${entities.status === 'pause' ? 'Resume' : 'Pause'}
-            </button>
-            <button class="btn btn-stop">Stop</button>
+          <div class="print-details">
+            <h3>${entities.taskName}</h3>
+            <div>Printed layers: ${entities.currentLayer}/${entities.totalLayers}</div>
+            <div class="time-info">
+              <span class="remaining">Time left: ${formatters.formatDuration(entities.remainingTime)}</span>
+              <span class="completion">Done at: ${formatters.formatEndTime(entities.remainingTime, hass)}</span>
+            </div>
+            <div class="progress-bar">
+              <div class="progress-fill" style="width: ${entities.progress}%"></div>
+            </div>
+            <div class="controls">
+              <button class="btn btn-pause">
+                ${entities.status === 'pause' ? 'Resume' : 'Pause'}
+              </button>
+              <button class="btn btn-stop">Stop</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    ` : `
+      <div class="not-printing">
+        <div class="message">Not currently printing</div>
+      </div>
+    `}
     
     <div class="temperatures">
       <div class="temp-item">
@@ -99,20 +105,20 @@ export const cardTemplate = (entities, hass, amsSlots, formatters) => `
       </div>
     </div>
     
-   <div class="materials">
-  ${Array.isArray(amsSlots) && amsSlots.length > 0 ? 
-    amsSlots.map((slot, index) => `
-      <div class="material-slot">
-        <div class="material-circle" style="background-color: ${slot?.color || '#E0E0E0'}"></div>
-        <div class="material-type">${slot?.type || 'Empty'}</div>
-      </div>
-    `).join('') : `
-      <div class="material-slot">
-        <div class="material-circle" style="background-color: #E0E0E0"></div>
-        <div class="material-type">No Material</div>
-      </div>
-    `
-  }
-</div>
+    <div class="materials">
+      ${Array.isArray(amsSlots) && amsSlots.length > 0 ? 
+        amsSlots.map((slot, index) => `
+          <div class="material-slot">
+            <div class="material-circle" style="background-color: ${slot?.color || '#E0E0E0'}"></div>
+            <div class="material-type">${slot?.type || 'Empty'}</div>
+          </div>
+        `).join('') : `
+          <div class="material-slot">
+            <div class="material-circle" style="background-color: #E0E0E0"></div>
+            <div class="material-type">No Material</div>
+          </div>
+        `
+      }
+    </div>
   </div>
 `;

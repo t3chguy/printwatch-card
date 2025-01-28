@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 * Added ability to change name of printer
 * Added circled to better highlight light filament
 * Hiding printing UI when not printing
+* Adding theme support (aka dark mode)
 
 
 ## [1.0.0] - 2024-01-28
