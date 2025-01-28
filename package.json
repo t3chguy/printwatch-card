@@ -1,0 +1,22 @@
+{
+  "name": "printwatch-card",
+  "version": "1.0.0",
+  "description": "A Home Assistant card for 3D printers",
+  "main": "dist/printwatch-card.js",
+  "scripts": {
+    "build": "rollup -c",
+    "lint": "eslint src/*"
+  },
+  "keywords": [
+    "home-assistant",
+    "homeassistant",
+    "hacs",
+    "bambu-lab",
+    "3d-printer"
+  ],
+  "author": "Steven Hubert",
+  "license": "MIT",
+  "dependencies": {
+    "lit": "^2.0.0"
+  }
+}
