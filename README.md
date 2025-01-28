@@ -21,6 +21,10 @@ A feature-rich Home Assistant card for monitoring and controlling your P1S 3D pr
 - Home Assistant
 - P1S Printer integration configured in Home Assistant using [ha-bambulab]((https://github.com/greghesp/ha-bambulab)) plugin
 - Required entities set up (see Configuration section)
+- Image sensor toggle turned on
+
+![Image Screenshot](assets/image-toggle.png)
+
 
 ## Installation
 
