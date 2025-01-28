@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.4] - 2024-01-28
+
+* Added external spool support
+* Added ability to change name of printer
+* Added circled to better highlight light filament
+* Hiding printing UI when not printing
+
+
 ## [1.0.0] - 2024-01-28
 
 ### Initial Release

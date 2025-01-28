@@ -71,6 +71,19 @@ export const styles = `
     padding: 16px;
     margin-bottom: 16px;
   }
+  .not-printing {
+    background: white;
+    padding: 24px;
+    margin-bottom: 16px;
+    text-align: center;
+    border-radius: 8px;
+
+  }
+  .not-printing .message {
+    color: #9e9e9e;
+    font-size: 16px;
+    font-weight: 500;
+  }
   .print-preview {
     display: flex;
     gap: 16px;
