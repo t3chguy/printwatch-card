@@ -111,7 +111,6 @@ class PrintWatchCard extends HTMLElement {
       }];
     }
     
-    console.log('Final AMS Slots:', amsSlots);
 
     if (!this.content) {
       this.shadowRoot.innerHTML = `
