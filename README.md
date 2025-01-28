@@ -117,6 +117,9 @@ aux_fan_entity: fan.p1s_aux_fan
 2. **Camera feed not updating**
    - Ensure camera entity is properly configured
    - Check that image updates are enabled in HA
+   - You must toggle on "use image sensor camera" in the ha-bambulab plugin
+
+![Image Screenshot](assets/image-toggle.png)
 
 3. **Controls not working**
    - Verify that your user has proper permissions for the entities
