@@ -1,4 +1,5 @@
 import { styles } from './printwatch-card-styles.js';
+import { cardTemplate } from './printwatch-card-template.js';
 
 class PrintWatchCard extends HTMLElement {
   constructor() {
@@ -6,25 +7,27 @@ class PrintWatchCard extends HTMLElement {
     this.attachShadow({ mode: 'open' });
     this.config = {};
     this._lastCameraUpdate = 0;
-    this._cameraUpdateInterval = 1000; // Update camera every 1 second
     
-    this._formatDuration = (minutes) => {
-      if (!minutes || minutes <= 0) return 'Complete';
-      const hours = Math.floor(minutes / 60);
-      const mins = minutes % 60;
-      return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
-    };
+    // Format utilities
+    this.formatters = {
+      formatDuration: (minutes) => {
+        if (!minutes || minutes <= 0) return 'Complete';
+        const hours = Math.floor(minutes / 60);
+        const mins = minutes % 60;
+        return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+      },
 
-    this._formatEndTime = (remainingMinutes, hass) => {
-      if (!remainingMinutes || remainingMinutes <= 0) return '---';
-      const endTime = new Date(Date.now() + remainingMinutes * 60000);
-      const timeFormat = hass.locale.hour_24 ? 
-        { hour: '2-digit', minute: '2-digit', hour12: false } :
-        { hour: 'numeric', minute: '2-digit', hour12: true };
-      return new Intl.DateTimeFormat(hass.locale.language, timeFormat)
-        .format(endTime)
-        .toLowerCase()
-        .replace(' ', '');
+      formatEndTime: (remainingMinutes, hass) => {
+        if (!remainingMinutes || remainingMinutes <= 0) return '---';
+        const endTime = new Date(Date.now() + remainingMinutes * 60000);
+        const timeFormat = hass.locale.hour_24 ? 
+          { hour: '2-digit', minute: '2-digit', hour12: false } :
+          { hour: 'numeric', minute: '2-digit', hour12: true };
+        return new Intl.DateTimeFormat(hass.locale.language, timeFormat)
+          .format(endTime)
+          .toLowerCase()
+          .replace(' ', '');
+      }
     };
   }
 
@@ -32,14 +35,12 @@ class PrintWatchCard extends HTMLElement {
     if (!this.config) return;
     this._hass = hass;
 
-    // Update camera feed periodically
     const now = Date.now();
     if (now - this._lastCameraUpdate > this._cameraUpdateInterval) {
       this._lastCameraUpdate = now;
       this._updateCameraFeed(hass);
     }
 
-    // Get all entity states and update the UI
     this._updateUI(hass);
   }
 
@@ -55,7 +56,6 @@ class PrintWatchCard extends HTMLElement {
       }
     }
 
-    // Also update the cover image
     const coverImg = this.content.querySelector('.preview-image img');
     if (coverImg) {
       const coverEntity = hass.states[this.config.cover_image_entity];
@@ -66,8 +66,9 @@ class PrintWatchCard extends HTMLElement {
   }
 
   _updateUI(hass) {
+  
     const entities = {
-      name: hass.states[this.config.printer_name_entity]?.state || '3DP-00M-219',
+      name: this.config.printer_name || 'Unnamed Printer',
       status: hass.states[this.config.print_status_entity]?.state || 'idle',
       currentStage: hass.states[this.config.current_stage_entity]?.state || 'unknown',
       taskName: hass.states[this.config.task_name_entity]?.state || 'No active print',
@@ -77,135 +78,45 @@ class PrintWatchCard extends HTMLElement {
       remainingTime: parseInt(hass.states[this.config.remaining_time_entity]?.state || '0'),
       bedTemp: parseFloat(hass.states[this.config.bed_temp_entity]?.state || '0'),
       nozzleTemp: parseFloat(hass.states[this.config.nozzle_temp_entity]?.state || '0'),
-      speedProfile: hass.states[this.config.speed_profile_entity]?.attributes?.modifier || 100
+      speedProfile: hass.states[this.config.speed_profile_entity]?.attributes?.modifier || 100,
+      externalSpoolType: hass.states[this.config.external_spool_entity]?.state || 'Unknown',
+      externalSpoolColor: hass.states[this.config.external_spool_entity]?.attributes?.color || '#E0E0E0'
     };
 
-    const amsSlots = [
-      this.config.ams_slot1_entity,
-      this.config.ams_slot2_entity,
-      this.config.ams_slot3_entity,
-      this.config.ams_slot4_entity
-    ].map(entity => {
-      const state = hass.states[entity];
-      return {
-        type: state?.attributes?.type || 'Empty',
-        color: state?.attributes?.color || '#E0E0E0',
-        empty: state?.attributes?.empty || true
-      };
-    });
+    // Determine material display (AMS or External Spool)
+    let amsSlots = [];
+    if (this.config.ams_slot1_entity) {
+      // Using AMS
+      [
+        this.config.ams_slot1_entity,
+        this.config.ams_slot2_entity,
+        this.config.ams_slot3_entity,
+        this.config.ams_slot4_entity
+      ].forEach((entity) => {
+        if (entity && hass.states[entity]) {
+          const state = hass.states[entity];
+          amsSlots.push({
+            type: state.state || 'Empty',
+            color: state.attributes?.color || '#E0E0E0',
+            empty: state.attributes?.empty || false
+          });
+        }
+      });
+    } else if (this.config.external_spool_entity) {
+      // Using external spool
+      amsSlots = [{
+        type: entities.externalSpoolType,
+        color: entities.externalSpoolColor,
+        empty: false
+      }];
+    }
+    
+    console.log('Final AMS Slots:', amsSlots);
 
     if (!this.content) {
       this.shadowRoot.innerHTML = `
         <style>${styles}</style>
-        <ha-dialog 
-          id="pauseDialog"
-          heading="Confirm Pause"
-          @closed="${(e) => this._handlePauseDialog(e, hass)}"
-        >
-          <div>
-            Are you sure you want to pause the current print?
-            This may affect print quality.
-          </div>
-          <mwc-button slot="primaryAction" dialogAction="confirm">
-            Confirm
-          </mwc-button>
-          <mwc-button slot="secondaryAction" dialogAction="cancel">
-            Cancel
-          </mwc-button>
-        </ha-dialog>
-
-        <ha-dialog
-          id="stopDialog"
-          heading="Confirm Stop"
-          @closed="${(e) => this._handleStopDialog(e, hass)}"
-        >
-          <div>
-            Are you sure you want to stop the current print?
-            This action cannot be undone.
-          </div>
-          <mwc-button slot="primaryAction" dialogAction="confirm" style="color: rgb(229, 57, 53);">
-            Stop Print
-          </mwc-button>
-          <mwc-button slot="secondaryAction" dialogAction="cancel">
-            Cancel
-          </mwc-button>
-        </ha-dialog>
-
-        <div class="card">
-          <div class="header">
-            <div>
-              <div class="printer-name">${entities.name}</div>
-              <div class="status">${entities.status}</div>
-            </div>
-            <div class="header-controls">
-              <button class="icon-button ${hass.states[this.config.chamber_light_entity]?.state === 'on' ? 'active' : ''}" 
-                      @click="${() => this._toggleLight(hass)}">
-                <ha-icon icon="mdi:lightbulb"></ha-icon>
-              </button>
-              <button class="icon-button ${hass.states[this.config.aux_fan_entity]?.state === 'on' ? 'active' : ''}"
-                      @click="${() => this._toggleFan(hass)}">
-                <ha-icon icon="mdi:fan"></ha-icon>
-              </button>
-            </div>
-          </div>
-          
-          <div class="camera-feed">
-            <div class="camera-label">${entities.currentStage}</div>
-            <img src="${hass.states[this.config.camera_entity]?.attributes?.entity_picture || ''}" 
-                 style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;"
-                 alt="Camera Feed" />
-          </div>
-          
-          <div class="print-status">
-            <div class="print-preview">
-              <div class="preview-image">
-                <img src="${hass.states[this.config.cover_image_entity]?.attributes?.entity_picture || ''}" 
-                     alt="Print Preview" />
-              </div>
-              <div class="print-details">
-                <h3>${entities.taskName}</h3>
-                <div>Printed layers: ${entities.currentLayer}/${entities.totalLayers}</div>
-                <div class="time-info">
-                  <span class="remaining">Time left: ${this._formatDuration(entities.remainingTime)}</span>
-                  <span class="completion">Done at: ${this._formatEndTime(entities.remainingTime, hass)}</span>
-                </div>
-                <div class="progress-bar">
-                  <div class="progress-fill" style="width: ${entities.progress}%"></div>
-                </div>
-                <div class="controls">
-                  <button class="btn btn-pause">
-                    ${entities.status === 'pause' ? 'Resume' : 'Pause'}
-                  </button>
-                  <button class="btn btn-stop">Stop</button>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          <div class="temperatures">
-            <div class="temp-item">
-              <div class="temp-value">${entities.bedTemp}°</div>
-              <div>Bed</div>
-            </div>
-            <div class="temp-item">
-              <div class="temp-value">${entities.nozzleTemp}°</div>
-              <div>Nozzle</div>
-            </div>
-            <div class="temp-item">
-              <div class="temp-value">${entities.speedProfile}%</div>
-              <div>Speed</div>
-            </div>
-          </div>
-          
-          <div class="materials">
-            ${amsSlots.map((slot, index) => `
-              <div class="material-slot">
-                <div class="material-circle" style="background-color: ${slot.color}"></div>
-                <div class="material-type">${slot.type}</div>
-              </div>
-            `).join('')}
-          </div>
-        </div>
+        ${cardTemplate(entities, hass, amsSlots, this.formatters)}
       `;
       this.content = this.shadowRoot.querySelector('.card');
       this._setupEventListeners(hass);
@@ -223,9 +134,9 @@ class PrintWatchCard extends HTMLElement {
       `Printed layers: ${entities.currentLayer}/${entities.totalLayers}`;
     
     this.content.querySelector('.remaining').textContent = 
-      `Time left: ${this._formatDuration(entities.remainingTime)}`;
+      `Time left: ${this.formatters.formatDuration(entities.remainingTime)}`;
     this.content.querySelector('.completion').textContent = 
-      `Done at: ${this._formatEndTime(entities.remainingTime, hass)}`;
+      `Done at: ${this.formatters.formatEndTime(entities.remainingTime, hass)}`;
     
     this.content.querySelector('.progress-fill').style.width = `${entities.progress}%`;
     
@@ -257,17 +168,13 @@ class PrintWatchCard extends HTMLElement {
   _setupEventListeners(hass) {
     const pauseButton = this.content.querySelector('.btn-pause');
     const stopButton = this.content.querySelector('.btn-stop');
-    const lightButton = this.content.querySelector('.icon-button:first-of-type');
-    const fanButton = this.content.querySelector('.icon-button:last-of-type');
     
     pauseButton.addEventListener('click', () => {
       const isPaused = hass.states[this.config.print_status_entity]?.state === 'pause';
       if (!isPaused) {
-        // Only show confirmation for pausing, not resuming
         const pauseDialog = this.shadowRoot.querySelector('#pauseDialog');
         pauseDialog.show();
       } else {
-        // Resume doesn't need confirmation
         hass.callService('button', 'press', { entity_id: this.config.resume_button_entity });
       }
     });
@@ -275,14 +182,6 @@ class PrintWatchCard extends HTMLElement {
     stopButton.addEventListener('click', () => {
       const stopDialog = this.shadowRoot.querySelector('#stopDialog');
       stopDialog.show();
-    });
-    
-    lightButton.addEventListener('click', () => {
-      hass.callService('light', 'toggle', { entity_id: this.config.chamber_light_entity });
-    });
-    
-    fanButton.addEventListener('click', () => {
-      hass.callService('fan', 'toggle', { entity_id: this.config.aux_fan_entity });
     });
   }
 
@@ -298,11 +197,20 @@ class PrintWatchCard extends HTMLElement {
     }
   }
 
+  _toggleLight(hass) {
+    hass.callService('light', 'toggle', { entity_id: this.config.chamber_light_entity });
+  }
+
+  _toggleFan(hass) {
+    hass.callService('fan', 'toggle', { entity_id: this.config.aux_fan_entity });
+  }
+
   setConfig(config) {
-    if (!config.printer_name_entity) {
-      throw new Error('Please define printer_name_entity');
+    if (!config.printer_name) {
+      throw new Error('Please define printer_name');
     }
     this.config = config;
+    this._cameraUpdateInterval = config.camera_refresh_rate || 1000;
   }
 
   getCardSize() {
@@ -311,7 +219,7 @@ class PrintWatchCard extends HTMLElement {
 
   static getStubConfig() {
     return {
-      printer_name_entity: 'sensor.p1s_printer_name',
+      printer_name: 'My 3D Printer',
       print_status_entity: 'sensor.p1s_print_status',
       current_stage_entity: 'sensor.p1s_current_stage',
       task_name_entity: 'sensor.p1s_task_name',

@@ -59,7 +59,8 @@ Add the card to your dashboard with this basic configuration:
 
 ```yaml
 type: custom:printwatch-card
-printer_name_entity: sensor.p1s_printer_name
+printer_name: P1S
+camera_refresh_rate: 1000  # Refresh rate in milliseconds (1 second)
 print_status_entity: sensor.p1s_print_status
 current_stage_entity: sensor.p1s_current_stage
 task_name_entity: sensor.p1s_task_name
