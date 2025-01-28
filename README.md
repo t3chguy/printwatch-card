@@ -145,3 +145,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
+If you find this useful I am addicted to good coffee.
+
+<a href="https://www.buymeacoffee.com/drkpxl" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
