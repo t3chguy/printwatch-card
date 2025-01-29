@@ -1,6 +1,6 @@
 export const styles = `
   .card {
-    background: var(--ha-card-background, var(--card-background-color, white));
+    background: var(--ha-card-background, var(--card-background-color));
     border-radius: var(--ha-card-border-radius, 12px);
     padding: 16px;
     font-family: var(--primary-font-family, -apple-system, BlinkMacSystemFont, sans-serif);
@@ -17,7 +17,7 @@ export const styles = `
     color: var(--primary-text-color);
   }
   .status {
-    color: var(--state-active-color, #4CAF50);
+    color: var(--state-active-color);
     font-size: 16px;
     font-weight: 500;
   }
@@ -42,7 +42,7 @@ export const styles = `
     background: var(--secondary-background-color);
   }
   .icon-button.active {
-    color: var(--state-active-color, #4CAF50);
+    color: var(--state-active-color);
   }
   .icon-button ha-icon {
     width: 24px;
@@ -61,7 +61,7 @@ export const styles = `
     top: 16px;
     left: 16px;
     color: var(--text-primary-color, white);
-    background: var(--ha-card-background, rgba(0,0,0,0.7));
+    background: var(--ha-card-background;
     padding: 8px 16px;
     border-radius: 6px;
     font-size: 16px;
@@ -132,7 +132,7 @@ export const styles = `
   .progress-fill {
     width: 0%;
     height: 100%;
-    background: var(--state-active-color, #43a047);
+    background: var(--state-active-color);
     border-radius: 2px;
     transition: width 0.3s;
   }
@@ -154,8 +154,8 @@ export const styles = `
     color: var(--primary-text-color);
   }
   .btn-stop {
-    background: var(--error-color, #e53935);
-    color: var(--text-primary-color, white);
+    background: var(--error-color);
+    color: var(--text-primary-color);
   }
   .temperatures {
     display: flex;

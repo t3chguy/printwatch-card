@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.7] - 2024-01-29
+
+* Removing all hard coded colors
+
 ## [1.0.6] - 2024-01-28
 
 * Removing GCode Preview since it doesn't work in LAN only mode (hopefully we can find a way to get it back)
