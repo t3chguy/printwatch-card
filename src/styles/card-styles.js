@@ -1,31 +1,40 @@
-export const styles = `
+import { css } from 'lit';
+
+export const cardStyles = css`
   .card {
     background: var(--ha-card-background, var(--card-background-color));
     border-radius: var(--ha-card-border-radius, 12px);
     padding: 16px;
     font-family: var(--primary-font-family, -apple-system, BlinkMacSystemFont, sans-serif);
   }
+
+  /* Header styles */
   .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 16px;
   }
+
   .printer-name {
     font-size: 24px;
     font-weight: 500;
     color: var(--primary-text-color);
   }
+
   .status {
     color: var(--state-active-color);
     font-size: 16px;
     font-weight: 500;
   }
+
+  /* Control buttons */
   .header-controls {
     display: flex;
     gap: 12px;
     align-items: center;
   }
+
   .icon-button {
     background: none;
     border: none;
@@ -38,16 +47,21 @@ export const styles = `
     justify-content: center;
     transition: all 0.2s ease;
   }
+
   .icon-button:hover {
     background: var(--secondary-background-color);
   }
+
   .icon-button.active {
     color: var(--state-active-color);
   }
+
   .icon-button ha-icon {
     width: 24px;
     height: 24px;
   }
+
+  /* Camera feed */
   .camera-feed {
     width: 100%;
     height: 240px;
@@ -56,21 +70,25 @@ export const styles = `
     margin-bottom: 16px;
     position: relative;
   }
+
   .camera-label {
     position: absolute;
     top: 16px;
     left: 16px;
     color: var(--text-primary-color, white);
-    background: var(--ha-card-background;
+    background: var(--ha-card-background);
     padding: 8px 16px;
     border-radius: 6px;
     font-size: 16px;
   }
+
+  /* Print status section */
   .print-status {
     background: var(--ha-card-background);
     padding: 16px;
     margin-bottom: 16px;
   }
+
   .not-printing {
     background: var(--ha-card-background);
     padding: 24px;
@@ -78,38 +96,32 @@ export const styles = `
     text-align: center;
     border-radius: 8px;
   }
+
   .not-printing .message {
     color: var(--secondary-text-color);
     font-size: 16px;
     font-weight: 500;
   }
+
+  /* Print preview */
   .print-preview {
     display: flex;
     gap: 16px;
     align-items: center;
   }
-  /* .preview-image {
-    width: 80px;
-    height: 80px;
-    background: var(--secondary-background-color);
-    border-radius: 4px;
-    overflow: hidden;
 
-  }
-  .preview-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  } */
   .print-details {
     color: var(--primary-text-color);
     width: 100%
   }
+
   .print-details h3 {
     margin: 0 0 8px 0;
     font-size: 16px;
     color: var(--primary-text-color);
   }
+
+  /* Time information */
   .time-info {
     display: flex;
     justify-content: space-between;
@@ -117,18 +129,23 @@ export const styles = `
     color: var(--secondary-text-color);
     font-size: 14px;
   }
+
   .time-info .remaining {
     color: var(--primary-text-color);
   }
+
   .time-info .completion {
     color: var(--secondary-text-color);
   }
+
+  /* Progress bar */
   .progress-bar {
     height: 4px;
     background: var(--secondary-background-color);
     border-radius: 2px;
     margin: 8px 0;
   }
+
   .progress-fill {
     width: 0%;
     height: 100%;
@@ -136,11 +153,14 @@ export const styles = `
     border-radius: 2px;
     transition: width 0.3s;
   }
+
+  /* Control buttons */
   .controls {
     display: flex;
     gap: 8px;
     margin-top: 8px;
   }
+
   .btn {
     padding: 8px 24px;
     border: none;
@@ -149,14 +169,18 @@ export const styles = `
     font-size: 16px;
     cursor: pointer;
   }
+
   .btn-pause {
     background: var(--secondary-background-color);
     color: var(--primary-text-color);
   }
+
   .btn-stop {
     background: var(--error-color);
     color: var(--text-primary-color);
   }
+
+  /* Temperature section */
   .temperatures {
     display: flex;
     justify-content: space-around;
@@ -165,6 +189,7 @@ export const styles = `
     padding-bottom: 32px;
     position: relative;
   }
+
   .temperatures::after {
     content: '';
     position: absolute;
@@ -174,6 +199,7 @@ export const styles = `
     height: 1px;
     background-color: var(--divider-color);
   }
+
   .temp-item {
     text-align: center;
     color: var(--primary-text-color);
@@ -182,17 +208,21 @@ export const styles = `
     flex-direction: column;
     align-items: center;
   }
+
   .temp-value {
     font-size: 32px;
     font-weight: 500;
     margin-bottom: 4px;
   }
+
+  /* Materials section */
   .materials {
     display: flex;
     justify-content: space-around;
     width: 100%;
     padding: 0 16px;
   }
+
   .material-slot {
     display: flex;
     flex-direction: column;
@@ -200,12 +230,14 @@ export const styles = `
     flex: 1;
     gap: 8px;
   }
+
   .material-circle {
     width: 32px;
     height: 32px;
     border-radius: 50%;
     border: 1px solid var(--divider-color);
   }
+
   .material-type {
     font-size: 12px;
     color: var(--primary-text-color);
