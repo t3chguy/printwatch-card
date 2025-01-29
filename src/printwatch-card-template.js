@@ -2,7 +2,6 @@ export const cardTemplate = (entities, hass, amsSlots, formatters) => `
   <ha-dialog 
     id="pauseDialog"
     heading="Confirm Pause"
-    @closed="${(e) => this._handlePauseDialog(e, hass)}"
   >
     <div>
       Are you sure you want to pause the current print?
@@ -19,7 +18,6 @@ export const cardTemplate = (entities, hass, amsSlots, formatters) => `
   <ha-dialog
     id="stopDialog"
     heading="Confirm Stop"
-    @closed="${(e) => this._handleStopDialog(e, hass)}"
   >
     <div>
       Are you sure you want to stop the current print?
@@ -76,8 +74,8 @@ export const cardTemplate = (entities, hass, amsSlots, formatters) => `
               <div class="progress-fill" style="width: ${entities.progress}%"></div>
             </div>
             <div class="controls">
-              <button class="btn btn-pause">
-                ${entities.status === 'pause' ? 'Resume' : 'Pause'}
+              <button class="btn btn-pause" data-action="${entities.isPaused ? 'resume' : 'pause'}">
+                ${entities.isPaused ? 'Resume' : 'Pause'}
               </button>
               <button class="btn btn-stop">Stop</button>
             </div>

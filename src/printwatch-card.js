@@ -66,8 +66,49 @@ class PrintWatchCard extends HTMLElement {
   }
 
   _isPrinting(hass) {
+    const currentStage = hass.states[this.config.current_stage_entity]?.state;
     const printStatus = hass.states[this.config.print_status_entity]?.state;
-    return ['running', 'pause'].includes(printStatus);
+    
+    // If print_status indicates we're printing or paused, that takes precedence
+    if (['running', 'pause'].includes(printStatus)) {
+      return true;
+    }
+
+    // States that indicate no printing activity
+    const nonPrintingStates = [
+      'idle',
+      'offline',
+      'unknown'
+    ];
+
+    // If it's in a non-printing state, return false
+    if (nonPrintingStates.includes(currentStage)) {
+      return false;
+    }
+
+    // If it's actively printing or in any paused state, it's printing
+    if (currentStage === 'printing' || currentStage.startsWith('paused_')) {
+      return true;
+    }
+
+    // States that are part of the printing process
+    const printingProcessStates = [
+      'heatbed_preheating',
+      'heating_hotend',
+      'checking_extruder_temperature',
+      'auto_bed_leveling',
+      'scanning_bed_surface',
+      'inspecting_first_layer',
+      'calibrating_extrusion',
+      'calibrating_extrusion_flow'
+    ];
+
+    return printingProcessStates.includes(currentStage);
+  }
+
+  _isPaused(hass) {
+    const printStatus = hass.states[this.config.print_status_entity]?.state;
+    return printStatus === 'pause';
   }
 
   _updateUI(hass) {
@@ -85,7 +126,13 @@ class PrintWatchCard extends HTMLElement {
       speedProfile: hass.states[this.config.speed_profile_entity]?.attributes?.modifier || 100,
       externalSpoolType: hass.states[this.config.external_spool_entity]?.state || 'Unknown',
       externalSpoolColor: hass.states[this.config.external_spool_entity]?.attributes?.color || '#E0E0E0',
-      print_status_entity: this.config.print_status_entity
+      isPrinting: this._isPrinting(hass),
+      isPaused: this._isPaused(hass),
+      print_status_entity: this.config.print_status_entity,
+      camera_entity: this.config.camera_entity,
+      cover_image_entity: this.config.cover_image_entity,
+      chamber_light_entity: this.config.chamber_light_entity,
+      aux_fan_entity: this.config.aux_fan_entity
     };
 
     // Determine material display (AMS or External Spool)
@@ -133,13 +180,14 @@ class PrintWatchCard extends HTMLElement {
     this.content.querySelector('.status').textContent = entities.status;
     this.content.querySelector('.camera-label').textContent = entities.currentStage;
 
-    const printStatus = this.content.querySelector('.print-status');
-    const idleStatus = this.content.querySelector('.idle-status');
+    const printStatusElement = this.content.querySelector('.print-status');
+    const notPrintingElement = this.content.querySelector('.not-printing');
 
-    if (this._isPrinting(hass)) {
-      if (idleStatus) idleStatus.style.display = 'none';
-      if (printStatus) {
-        printStatus.style.display = 'block';
+    // Handle visibility of print status and not-printing message
+    if (entities.isPrinting) {
+      if (notPrintingElement) notPrintingElement.style.display = 'none';
+      if (printStatusElement) {
+        printStatusElement.style.display = 'block';
         this.content.querySelector('.print-details h3').textContent = entities.taskName;
         this.content.querySelector('.print-details div:first-of-type').textContent = 
           `Printed layers: ${entities.currentLayer}/${entities.totalLayers}`;
@@ -150,13 +198,18 @@ class PrintWatchCard extends HTMLElement {
           `Done at: ${this.formatters.formatEndTime(entities.remainingTime, hass)}`;
         
         this.content.querySelector('.progress-fill').style.width = `${entities.progress}%`;
-        
-        const pauseButton = this.content.querySelector('.btn-pause');
-        pauseButton.textContent = entities.status === 'pause' ? 'Resume' : 'Pause';
       }
     } else {
-      if (printStatus) printStatus.style.display = 'none';
-      if (idleStatus) idleStatus.style.display = 'flex';
+      if (printStatusElement) printStatusElement.style.display = 'none';
+      if (notPrintingElement) notPrintingElement.style.display = 'block';
+    }
+    
+    // Update pause/resume button
+    const pauseButton = this.content.querySelector('.btn-pause');
+    if (pauseButton) {
+      const isPaused = this._isPaused(hass);
+      pauseButton.textContent = isPaused ? 'Resume' : 'Pause';
+      pauseButton.dataset.action = isPaused ? 'resume' : 'pause';
     }
     
     const temps = this.content.querySelectorAll('.temp-value');
@@ -166,63 +219,100 @@ class PrintWatchCard extends HTMLElement {
     
     const materialSlots = this.content.querySelectorAll('.material-slot');
     amsSlots.forEach((slot, index) => {
-      const circle = materialSlots[index].querySelector('.material-circle');
-      const type = materialSlots[index].querySelector('.material-type');
-      circle.style.backgroundColor = slot.color;
-      type.textContent = slot.type;
+      if (materialSlots[index]) {
+        const circle = materialSlots[index].querySelector('.material-circle');
+        const type = materialSlots[index].querySelector('.material-type');
+        if (circle) circle.style.backgroundColor = slot.color;
+        if (type) type.textContent = slot.type;
+      }
     });
     
     const lightButton = this.content.querySelector('.icon-button:first-of-type');
     const fanButton = this.content.querySelector('.icon-button:last-of-type');
     
-    lightButton.classList.toggle('active', 
-      hass.states[this.config.chamber_light_entity]?.state === 'on');
-    fanButton.classList.toggle('active',
-      hass.states[this.config.aux_fan_entity]?.state === 'on');
+    if (lightButton) {
+      lightButton.classList.toggle('active', 
+        hass.states[entities.chamber_light_entity]?.state === 'on');
+    }
+    if (fanButton) {
+      fanButton.classList.toggle('active',
+        hass.states[entities.aux_fan_entity]?.state === 'on');
+    }
   }
 
   _setupEventListeners(hass) {
     const pauseButton = this.content.querySelector('.btn-pause');
     const stopButton = this.content.querySelector('.btn-stop');
+    const lightButton = this.content.querySelector('.icon-button:first-of-type');
+    const fanButton = this.content.querySelector('.icon-button:last-of-type');
+    const pauseDialog = this.shadowRoot.querySelector('#pauseDialog');
+    const stopDialog = this.shadowRoot.querySelector('#stopDialog');
     
+    // Setup dialog event listeners
+    if (pauseDialog) {
+      pauseDialog.addEventListener('closed', (e) => this._handlePauseDialog(e, hass));
+    }
+    
+    if (stopDialog) {
+      stopDialog.addEventListener('closed', (e) => this._handleStopDialog(e, hass));
+    }
+
+    // Setup button click handlers
     if (pauseButton) {
       pauseButton.addEventListener('click', () => {
-        const isPaused = hass.states[this.config.print_status_entity]?.state === 'pause';
-        if (!isPaused) {
-          const pauseDialog = this.shadowRoot.querySelector('#pauseDialog');
-          pauseDialog.show();
+        if (this._isPaused(hass)) {
+          // Resume immediately if paused
+          hass.callService('button', 'press', {
+            entity_id: this.config.resume_button_entity
+          });
         } else {
-          hass.callService('button', 'press', { entity_id: this.config.resume_button_entity });
+          // Show confirmation for pause
+          if (pauseDialog) pauseDialog.show();
         }
       });
     }
     
     if (stopButton) {
       stopButton.addEventListener('click', () => {
-        const stopDialog = this.shadowRoot.querySelector('#stopDialog');
-        stopDialog.show();
+        if (stopDialog) stopDialog.show();
       });
+    }
+
+    if (lightButton) {
+      lightButton.addEventListener('click', () => this._toggleLight(hass));
+    }
+
+    if (fanButton) {
+      fanButton.addEventListener('click', () => this._toggleFan(hass));
     }
   }
 
   _handlePauseDialog(e, hass) {
     if (e.detail.action === "confirm") {
-      hass.callService('button', 'press', { entity_id: this.config.pause_button_entity });
+      hass.callService('button', 'press', {
+        entity_id: this.config.pause_button_entity
+      });
     }
   }
 
   _handleStopDialog(e, hass) {
     if (e.detail.action === "confirm") {
-      hass.callService('button', 'press', { entity_id: this.config.stop_button_entity });
+      hass.callService('button', 'press', {
+        entity_id: this.config.stop_button_entity
+      });
     }
   }
 
   _toggleLight(hass) {
-    hass.callService('light', 'toggle', { entity_id: this.config.chamber_light_entity });
+    hass.callService('light', 'toggle', {
+      entity_id: this.config.chamber_light_entity
+    });
   }
 
   _toggleFan(hass) {
-    hass.callService('fan', 'toggle', { entity_id: this.config.aux_fan_entity });
+    hass.callService('fan', 'toggle', {
+      entity_id: this.config.aux_fan_entity
+    });
   }
 
   setConfig(config) {
