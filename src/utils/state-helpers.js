@@ -65,8 +65,13 @@ export const isPaused = (hass, config) => {
 export const getAmsSlots = (hass, config) => {
   let slots = [];
   
-  if (config.ams_slot1_entity) {
-    // Using AMS
+  // Check if using AMS by looking for AMS entities
+  const hasAms = config.ams_slot1_entity && 
+                 hass.states[config.ams_slot1_entity] &&
+                 hass.states[config.ams_slot1_entity].attributes?.type;
+  
+  if (hasAms) {
+    // Using AMS system
     [
       config.ams_slot1_entity,
       config.ams_slot2_entity,
@@ -78,18 +83,24 @@ export const getAmsSlots = (hass, config) => {
         slots.push({
           type: state.state || 'Empty',
           color: state.attributes?.color || '#E0E0E0',
-          empty: state.attributes?.empty || false
+          empty: state.attributes?.empty || false,
+          active: state.attributes?.active || false,
+          name: state.attributes?.name || 'Unknown'
         });
       }
     });
-  } else if (config.external_spool_entity) {
+  } else if (config.external_spool_entity && hass.states[config.external_spool_entity]) {
     // Using external spool
     const externalSpool = hass.states[config.external_spool_entity];
-    slots = [{
-      type: externalSpool?.state || 'Unknown',
-      color: externalSpool?.attributes?.color || '#E0E0E0',
-      empty: false
-    }];
+    if (externalSpool.state !== 'unknown') {
+      slots = [{
+        type: externalSpool.state,
+        color: externalSpool.attributes?.color || '#E0E0E0',
+        empty: false,
+        name: externalSpool.attributes?.name || 'External Spool',
+        active: null  // null indicates external spool - we don't show active state for these
+      }];
+    }
   }
 
   return slots;
@@ -116,5 +127,8 @@ export const getEntityStates = (hass, config) => ({
   externalSpoolType: hass.states[config.external_spool_entity]?.state || 'Unknown',
   externalSpoolColor: hass.states[config.external_spool_entity]?.attributes?.color || '#E0E0E0',
   isPrinting: isPrinting(hass, config),
-  isPaused: isPaused(hass, config)
+  isPaused: isPaused(hass, config),
+  chamber_light_entity: config.chamber_light_entity,
+  aux_fan_entity: config.aux_fan_entity,
+  camera_entity: config.camera_entity
 });

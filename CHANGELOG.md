@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.9] - 2024-01-29
+
+* Improved layout of AMS filament
+* Highlight filament in use
+* Improve status of print labeling
+
 ## [1.0.8] - 2024-01-29
 
 * Complete development workflow refactor

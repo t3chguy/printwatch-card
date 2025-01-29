@@ -13,6 +13,7 @@ export const DEFAULT_CONFIG = {
   bed_temp_entity: 'sensor.p1s_bed_temperature',
   nozzle_temp_entity: 'sensor.p1s_nozzle_temperature',
   speed_profile_entity: 'sensor.p1s_speed_profile',
+  active_tray_index_entity: 'sensor.p1s_active_tray_index',
   ams_slot1_entity: 'sensor.p1s_ams_tray_1',
   ams_slot2_entity: 'sensor.p1s_ams_tray_2',
   ams_slot3_entity: 'sensor.p1s_ams_tray_3',

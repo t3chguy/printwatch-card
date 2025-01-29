@@ -33,6 +33,9 @@ const dialogTemplate = (id, heading, message, confirmText, confirmStyle = '') =>
 export const cardTemplate = (context) => {
   const { entities, hass, amsSlots, formatters } = context;
   
+  // Find the active slot if using AMS
+  const activeSlot = amsSlots.find(slot => slot.active === true);
+  
   return html`
     ${dialogTemplate(
       'pauseDialog',
@@ -50,6 +53,7 @@ export const cardTemplate = (context) => {
     )}
 
     <div class="card">
+
       <div class="header">
         <div>
           <div class="printer-name">${entities.name}</div>
@@ -134,10 +138,10 @@ export const cardTemplate = (context) => {
         ${amsSlots.map(slot => html`
           <div class="material-slot">
             <div 
-              class="material-circle" 
-              style="background-color: ${slot?.color || '#E0E0E0'}"
+              class="material-circle ${slot.active === true ? 'active' : ''}"
+              style="background-color: ${slot.color || '#E0E0E0'}"
             ></div>
-            <div class="material-type">${slot?.type || 'Empty'}</div>
+            <div class="material-type">${slot.type || 'Empty'}</div>
           </div>
         `)}
       </div>

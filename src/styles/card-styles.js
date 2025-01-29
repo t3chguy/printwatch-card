@@ -6,7 +6,11 @@ export const cardStyles = css`
     border-radius: var(--ha-card-border-radius, 12px);
     padding: 16px;
     font-family: var(--primary-font-family, -apple-system, BlinkMacSystemFont, sans-serif);
+    position: relative;
+    overflow: hidden;
   }
+
+
 
   /* Header styles */
   .header {
@@ -75,11 +79,12 @@ export const cardStyles = css`
     position: absolute;
     top: 16px;
     left: 16px;
-    color: var(--text-primary-color, white);
-    background: var(--ha-card-background);
+    color: var(--secondary-text-color);
     padding: 8px 16px;
     border-radius: 6px;
     font-size: 16px;
+    background: var(--card-background-color);
+    text-transform: capitalize; 
   }
 
   /* Print status section */
@@ -218,17 +223,21 @@ export const cardStyles = css`
   /* Materials section */
   .materials {
     display: flex;
-    justify-content: space-around;
-    width: 100%;
-    padding: 0 16px;
+    justify-content: center;
+    width: calc(100% - 48px);
+    margin: 0 24px;
+    gap: 32px;
+    position: relative;
   }
 
   .material-slot {
     display: flex;
     flex-direction: column;
     align-items: center;
-    flex: 1;
+    width: 60px;
     gap: 8px;
+    text-align: center;
+    position: relative;
   }
 
   .material-circle {
@@ -236,23 +245,19 @@ export const cardStyles = css`
     height: 32px;
     border-radius: 50%;
     border: 1px solid var(--divider-color);
+    position: relative;
+    transition: transform 0.3s ease;
+  }
+
+  .material-circle.active {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 2px var(--primary-background-color),
+                0 0 0 4px var(--primary-color);
   }
 
   .material-type {
     font-size: 12px;
     color: var(--primary-text-color);
     text-align: center;
-  }
-
-  /* Dialog styles */
-  ha-dialog {
-    --mdc-dialog-heading-ink-color: var(--primary-text-color);
-    --mdc-dialog-content-ink-color: var(--primary-text-color);
-    --justify-action-buttons: space-between;
-  }
-  
-  ha-dialog div {
-    color: var(--primary-text-color);
-    line-height: 1.5;
   }
 `;
