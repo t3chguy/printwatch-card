@@ -2,21 +2,26 @@
 
 A feature-rich Home Assistant card for monitoring and controlling your P1S 3D printer. Get real-time updates on print progress, temperatures, material status, and more with a sleek, user-friendly interface.
 
-![PrintWatch Card Screenshot](assets/printwatch-card.png)
-![PrintWatch Dark Mode](assets/dark-mode.png)
+### Light Mode 
+![PrintWatch Card Screenshot](assets/light-mode-min.png)
+
+### Dark Mode
+![PrintWatch Dark Mode](assets/dark-mode-min.png)  
+
+### Theme Support Example
+![PrintWatch Nord](assets/nord-min.png)
 
 ## Features
 
-- 🎥 Live camera feed with print status overlay
-- 🌡️ Real-time temperature monitoring for bed and nozzle
+- 🎥 Live camera feed with configurable refresh rate
 - 📊 Print progress tracking with layer count and estimated completion time
-- 🎨 AMS/Material status visualization
+- 🎨 AMS/Material status visualization including current filament
 - 💡 Quick controls for chamber light and auxiliary fan
 - ⏯️ Print control buttons (pause/resume/stop) with confirmation dialogs
-- 🎛️ Speed profile monitoring
-- 🖼️ Print preview image
-- ⚡ Local API support
-- 🌑 Dark Mode
+- 🎛️ Speed profile monitoring (controls to come)
+- ⚡ Local API (LAN Mode)
+- 🌑 Native Theme support
+- 🌡️ Real-time temperature monitoring for bed and nozzle
 
 ## Prerequisites
 
@@ -30,7 +35,7 @@ A feature-rich Home Assistant card for monitoring and controlling your P1S 3D pr
 
 ## Installation
 
-### HACS (Recommended)
+### HACS (Recommended) - Awaiting approval from HACS, follow manual
 
 1. Open HACS in Home Assistant
 2. Click on "Frontend" section
@@ -41,19 +46,14 @@ A feature-rich Home Assistant card for monitoring and controlling your P1S 3D pr
 
 ### Manual Installation
 
-1. Download the `printwatch-card.js`, `printwatch-card-editor.js`, and `printwatch-card-styles.js` files
-2. Copy them to your `www/printwatch-card/` directory
-3. Add the following to your dashboard resources:
-   ```yaml
-   resources:
-     - url: /local/printwatch-card/printwatch-card.js
-       type: module
-     - url: /local/printwatch-card/printwatch-card-editor.js
-       type: module
-     - url: /local/printwatch-card/printwatch-card-styles.js
-       type: module
-   ```
-4. Restart Home Assistant
+1. Navigate to HACS
+2. Tap 3 buttons in top right and select custom repositories
+3. Paste `https://github.com/drkpxl/printwatch-card` and select `dashboard`
+4. Save
+5. Select printwatch-card in HACS listing and click download
+6. Navigate to settings and install card if needed there.
+7. Restart Home Assistant
+8. Clear Browser cache if using previous version
 
 ## Configuration
 
@@ -86,32 +86,6 @@ chamber_light_entity: light.p1s_chamber_light
 aux_fan_entity: fan.p1s_aux_fan
 ```
 
-### Configuration Options
-
-| Option | Type | Default | Description |
-|--------|------|---------|-------------|
-| printer_name_entity | string | required | Entity ID for printer name |
-| print_status_entity | string | required | Entity ID for print status |
-| current_stage_entity | string | required | Entity ID for current stage |
-| task_name_entity | string | required | Entity ID for task name |
-| progress_entity | string | required | Entity ID for print progress |
-| current_layer_entity | string | required | Entity ID for current layer |
-| total_layers_entity | string | required | Entity ID for total layers |
-| remaining_time_entity | string | required | Entity ID for remaining time |
-| bed_temp_entity | string | required | Entity ID for bed temperature |
-| nozzle_temp_entity | string | required | Entity ID for nozzle temperature |
-| speed_profile_entity | string | required | Entity ID for speed profile |
-| ams_slot1_entity | string | required | Entity ID for AMS slot 1 |
-| ams_slot2_entity | string | required | Entity ID for AMS slot 2 |
-| ams_slot3_entity | string | required | Entity ID for AMS slot 3 |
-| ams_slot4_entity | string | required | Entity ID for AMS slot 4 |
-| camera_entity | string | required | Entity ID for camera feed |
-| cover_image_entity | string | required | Entity ID for print preview image |
-| pause_button_entity | string | required | Entity ID for pause button |
-| resume_button_entity | string | required | Entity ID for resume button |
-| stop_button_entity | string | required | Entity ID for stop button |
-| chamber_light_entity | string | required | Entity ID for chamber light |
-| aux_fan_entity | string | required | Entity ID for auxiliary fan |
 
 ## Troubleshooting
 
@@ -157,4 +131,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If you find this useful I am addicted to good coffee.
 
-<a href="https://www.buymeacoffee.com/drkpxl" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 60px !important;width: 217px !important;" ></a>
+<a href="https://www.buymeacoffee.com/drkpxl" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 40px !important;width: 160px !important;" ></a>
