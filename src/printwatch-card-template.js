@@ -59,10 +59,7 @@ export const cardTemplate = (entities, hass, amsSlots, formatters) => `
     ${entities.isPrinting ? `
       <div class="print-status">
         <div class="print-preview">
-          <div class="preview-image">
-            <img src="${hass.states[entities.cover_image_entity]?.attributes?.entity_picture || ''}" 
-                 alt="Print Preview" />
-          </div>
+     
           <div class="print-details">
             <h3>${entities.taskName}</h3>
             <div>Printed layers: ${entities.currentLayer}/${entities.totalLayers}</div>

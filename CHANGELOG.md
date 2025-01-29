@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.6] - 2024-01-28
+
+* Removing GCode Preview since it doesn't work in LAN only mode (hopefully we can find a way to get it back)
+
 ## [1.0.5] - 2024-01-28
 
 * Fixed list of printer status's to better align with what we expect from Bambu printers

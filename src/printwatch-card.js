@@ -70,7 +70,7 @@ class PrintWatchCard extends HTMLElement {
     const printStatus = hass.states[this.config.print_status_entity]?.state;
     
     // If print_status indicates we're printing or paused, that takes precedence
-    if (['running', 'pause'].includes(printStatus)) {
+    if (['printing', 'running', 'pause'].includes(printStatus)) {
       return true;
     }
 

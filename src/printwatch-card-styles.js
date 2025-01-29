@@ -88,20 +88,22 @@ export const styles = `
     gap: 16px;
     align-items: center;
   }
-  .preview-image {
+  /* .preview-image {
     width: 80px;
     height: 80px;
     background: var(--secondary-background-color);
     border-radius: 4px;
     overflow: hidden;
+
   }
   .preview-image img {
     width: 100%;
     height: 100%;
     object-fit: cover;
-  }
+  } */
   .print-details {
     color: var(--primary-text-color);
+    width: 100%
   }
   .print-details h3 {
     margin: 0 0 8px 0;
