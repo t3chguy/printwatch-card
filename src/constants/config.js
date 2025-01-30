@@ -24,7 +24,8 @@ export const DEFAULT_CONFIG = {
   resume_button_entity: 'button.p1s_resume_printing',
   stop_button_entity: 'button.p1s_stop_printing',
   chamber_light_entity: 'light.p1s_chamber_light',
-  aux_fan_entity: 'fan.p1s_aux_fan'
+  aux_fan_entity: 'fan.p1s_aux_fan',
+  online_entity: 'binary_sensor.p1s_online'
 };
 
 /**

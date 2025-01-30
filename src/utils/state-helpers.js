@@ -129,6 +129,6 @@ export const getEntityStates = (hass, config) => ({
   isPrinting: isPrinting(hass, config),
   isPaused: isPaused(hass, config),
   chamber_light_entity: config.chamber_light_entity,
-  aux_fan_entity: config.aux_fan_entity,
+  aux_fan_entity: config.aux_fan_entity && hass.states[config.aux_fan_entity] ? config.aux_fan_entity : null,
   camera_entity: config.camera_entity
 });

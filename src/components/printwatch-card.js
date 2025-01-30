@@ -12,6 +12,7 @@ class PrintWatchCard extends LitElement {
       config: { type: Object },
       _lastCameraUpdate: { type: Number },
       _cameraUpdateInterval: { type: Number },
+      _cameraError: { type: Boolean },
     };
   }
 
@@ -23,6 +24,7 @@ class PrintWatchCard extends LitElement {
     super();
     this._lastCameraUpdate = 0;
     this._cameraUpdateInterval = DEFAULT_CAMERA_REFRESH_RATE;
+    this._cameraError = false;
     this.formatters = {
       formatDuration,
       formatEndTime
@@ -37,33 +39,59 @@ class PrintWatchCard extends LitElement {
     this._cameraUpdateInterval = config.camera_refresh_rate || DEFAULT_CAMERA_REFRESH_RATE;
   }
 
+  isOnline() {
+    const onlineEntity = this.hass.states[this.config.online_entity];
+    return onlineEntity?.state === 'on';
+  }
+
+  shouldUpdateCamera() {
+    if (!this.isOnline()) {
+      return false;
+    }
+
+    const now = Date.now();
+    return now - this._lastCameraUpdate > this._cameraUpdateInterval;
+  }
+
+  handleImageError() {
+    this._cameraError = true;
+    this.requestUpdate();
+  }
+
+  handleImageLoad() {
+    this._cameraError = false;
+  }
+
   updated(changedProps) {
     super.updated(changedProps);
     if (changedProps.has('hass')) {
-      this._updateCameraFeed();
+      if (this.shouldUpdateCamera()) {
+        this._updateCameraFeed();
+      }
     }
   }
 
   _updateCameraFeed() {
-    const now = Date.now();
-    if (now - this._lastCameraUpdate > this._cameraUpdateInterval) {
-      this._lastCameraUpdate = now;
-      
-      const timestamp = new Date().getTime();
-      const cameraImg = this.shadowRoot?.querySelector('.camera-feed img');
-      if (cameraImg) {
-        const cameraEntity = this.hass.states[this.config.camera_entity];
-        if (cameraEntity?.attributes?.entity_picture) {
-          cameraImg.src = `${cameraEntity.attributes.entity_picture}&t=${timestamp}`;
-        }
-      }
+    if (!this.isOnline()) {
+      return;
+    }
 
-      const coverImg = this.shadowRoot?.querySelector('.preview-image img');
-      if (coverImg) {
-        const coverEntity = this.hass.states[this.config.cover_image_entity];
-        if (coverEntity?.attributes?.entity_picture) {
-          coverImg.src = `${coverEntity.attributes.entity_picture}&t=${timestamp}`;
-        }
+    this._lastCameraUpdate = Date.now();
+    
+    const timestamp = new Date().getTime();
+    const cameraImg = this.shadowRoot?.querySelector('.camera-feed img');
+    if (cameraImg) {
+      const cameraEntity = this.hass.states[this.config.camera_entity];
+      if (cameraEntity?.attributes?.entity_picture) {
+        cameraImg.src = `${cameraEntity.attributes.entity_picture}&t=${timestamp}`;
+      }
+    }
+
+    const coverImg = this.shadowRoot?.querySelector('.preview-image img');
+    if (coverImg) {
+      const coverEntity = this.hass.states[this.config.cover_image_entity];
+      if (coverEntity?.attributes?.entity_picture) {
+        coverImg.src = `${coverEntity.attributes.entity_picture}&t=${timestamp}`;
       }
     }
   }
@@ -148,7 +176,11 @@ class PrintWatchCard extends LitElement {
       amsSlots,
       formatters: this.formatters,
       _toggleLight: () => this._toggleLight(),
-      _toggleFan: () => this._toggleFan()
+      _toggleFan: () => this._toggleFan(),
+      _cameraError: this._cameraError,
+      isOnline: this.isOnline(),
+      handleImageError: () => this.handleImageError(),
+      handleImageLoad: () => this.handleImageLoad()
     });
   }
 

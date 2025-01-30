@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.0.10] - 2024-01-30
+
+* Fixed camera aspect ratio, thanks [CasperVerswijvelt](https://github.com/CasperVerswijvelt)
+* Adjusted background color of printer status
+* Added overflow for long file name
+* Ability to remove Aux Fan from YAML to have the icon hide on the card
+* If printer is turned off hide the broken image from the card and handle request errors more gracefully. **You will need to add `online_entity: binary_sensor.p1s_online` to your YAML file**
+
+
 ## [1.0.9] - 2024-01-29
 
 * Improved layout of AMS filament

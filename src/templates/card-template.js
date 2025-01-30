@@ -53,7 +53,6 @@ export const cardTemplate = (context) => {
     )}
 
     <div class="card">
-
       <div class="header">
         <div>
           <div class="printer-name">${entities.name}</div>
@@ -66,23 +65,34 @@ export const cardTemplate = (context) => {
           >
             <ha-icon icon="mdi:lightbulb"></ha-icon>
           </button>
-          <button 
-            class="icon-button ${hass.states[entities.aux_fan_entity]?.state === 'on' ? 'active' : ''}"
-            @click=${context._toggleFan}
-          >
-            <ha-icon icon="mdi:fan"></ha-icon>
-          </button>
+          ${entities.aux_fan_entity ? html`
+            <button 
+              class="icon-button ${hass.states[entities.aux_fan_entity]?.state === 'on' ? 'active' : ''}"
+              @click=${context._toggleFan}
+            >
+              <ha-icon icon="mdi:fan"></ha-icon>
+            </button>
+          ` : ''}
         </div>
       </div>
       
-      <div class="camera-feed">
-        <div class="camera-label">${entities.currentStage}</div>
-        <img 
-          src="${hass.states[entities.camera_entity]?.attributes?.entity_picture || ''}" 
-          style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;"
-          alt="Camera Feed" 
-        />
-      </div>
+      ${context.isOnline && !context._cameraError ? html`
+        <div class="camera-feed">
+          <div class="camera-label">${entities.currentStage}</div>
+          <img 
+            src="${hass.states[entities.camera_entity]?.attributes?.entity_picture || ''}" 
+            style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;"
+            alt="Camera Feed"
+            @error=${context.handleImageError}
+            @load=${context.handleImageLoad}
+          />
+        </div>
+      ` : html`
+        <div class="offline-message">
+          <ha-icon icon="mdi:printer-off"></ha-icon>
+          <span>${context.isOnline ? 'Camera unavailable' : 'Printer offline'}</span>
+        </div>
+      `}
       
       ${entities.isPrinting ? html`
         <div class="print-status">

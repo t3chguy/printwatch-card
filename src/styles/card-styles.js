@@ -30,6 +30,7 @@ export const cardStyles = css`
     color: var(--state-active-color);
     font-size: 16px;
     font-weight: 500;
+    text-transform: capitalize; 
   }
 
   /* Control buttons */
@@ -66,24 +67,44 @@ export const cardStyles = css`
   }
 
   /* Camera feed */
-  .camera-feed {
+    .camera-feed {
     width: 100%;
-    height: 240px;
-    background: var(--secondary-background-color);
+    aspect-ratio: 16 / 9;
     border-radius: 12px;
     margin-bottom: 16px;
     position: relative;
+    background: var(--secondary-background-color);
+    overflow: hidden;
+  }
+
+  .offline-message {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    background: var(--secondary-background-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--secondary-text-color);
+    gap: 8px;
+  }
+
+  .offline-message ha-icon {
+    --mdc-icon-size: 48px;
+    opacity: 0.5;
   }
 
   .camera-label {
     position: absolute;
-    top: 16px;
-    left: 16px;
+    top: 4px;
+    left: 4px;
     color: var(--secondary-text-color);
-    padding: 8px 16px;
-    border-radius: 6px;
+    padding: 4px 8px;
+    border-radius: 12px;
     font-size: 16px;
-    background: var(--card-background-color);
+    background-color: color-mix(in srgb, var(--card-background-color) 80%, transparent);
     text-transform: capitalize; 
   }
 
@@ -124,6 +145,7 @@ export const cardStyles = css`
     margin: 0 0 8px 0;
     font-size: 16px;
     color: var(--primary-text-color);
+    overflow: new-line;
   }
 
   /* Time information */
