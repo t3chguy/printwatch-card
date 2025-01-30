@@ -9,6 +9,7 @@ All notable changes to this project will be documented in this file.
 * Added overflow for long file name
 * Ability to remove Aux Fan from YAML to have the icon hide on the card
 * If printer is turned off hide the broken image from the card and handle request errors more gracefully. **You will need to add `online_entity: binary_sensor.p1s_online` to your YAML file**
+* Adding percent complete
 
 
 ## [1.0.9] - 2024-01-29

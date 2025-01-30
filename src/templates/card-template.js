@@ -56,7 +56,12 @@ export const cardTemplate = (context) => {
       <div class="header">
         <div>
           <div class="printer-name">${entities.name}</div>
-          <div class="status">${entities.status}</div>
+          <div class="status">
+            ${entities.status}
+            ${entities.isPrinting ? html`
+              <span class="progress-text">${Math.round(entities.progress)}%</span>
+            ` : ''}
+          </div>
         </div>
         <div class="header-controls">
           <button 
@@ -126,6 +131,9 @@ export const cardTemplate = (context) => {
       ` : html`
         <div class="not-printing">
           <div class="message">Not currently printing</div>
+          ${entities.lastPrintName ? html`
+            <div class="last-print">Last print: ${entities.lastPrintName}</div>
+          ` : ''}
         </div>
       `}
       

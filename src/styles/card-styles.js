@@ -10,8 +10,6 @@ export const cardStyles = css`
     overflow: hidden;
   }
 
-
-
   /* Header styles */
   .header {
     display: flex;
@@ -30,7 +28,17 @@ export const cardStyles = css`
     color: var(--state-active-color);
     font-size: 16px;
     font-weight: 500;
-    text-transform: capitalize; 
+    text-transform: capitalize;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .progress-text {
+    color: var(--secondary-text-color);
+    font-size: 14px;
+    font-weight: 400;
+    opacity: 0.9;
   }
 
   /* Control buttons */
@@ -67,7 +75,7 @@ export const cardStyles = css`
   }
 
   /* Camera feed */
-    .camera-feed {
+  .camera-feed {
     width: 100%;
     aspect-ratio: 16 / 9;
     border-radius: 12px;
@@ -121,12 +129,21 @@ export const cardStyles = css`
     margin-bottom: 16px;
     text-align: center;
     border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
 
   .not-printing .message {
     color: var(--secondary-text-color);
     font-size: 16px;
     font-weight: 500;
+  }
+
+  .not-printing .last-print {
+    color: var(--secondary-text-color);
+    font-size: 14px;
+    opacity: 0.8;
   }
 
   /* Print preview */

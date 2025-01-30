@@ -107,6 +107,28 @@ export const getAmsSlots = (hass, config) => {
 };
 
 /**
+ * Get the last printed file name
+ * @param {object} hass - Home Assistant instance
+ * @param {object} config - Card configuration
+ * @returns {string|null} Last printed file name or null
+ */
+const getLastPrintName = (hass, config) => {
+  const printStatus = hass.states[config.print_status_entity]?.state;
+  const taskName = hass.states[config.task_name_entity]?.state;
+  
+  // Only show the last print name if we're in an idle or finished state
+  // and we have a valid task name
+  if (['idle', 'finish'].includes(printStatus) && 
+      taskName && 
+      taskName !== 'unavailable' && 
+      taskName !== 'unknown') {
+    return taskName;
+  }
+  
+  return null;
+};
+
+/**
  * Get all relevant entity states
  * @param {object} hass - Home Assistant instance
  * @param {object} config - Card configuration
@@ -128,6 +150,7 @@ export const getEntityStates = (hass, config) => ({
   externalSpoolColor: hass.states[config.external_spool_entity]?.attributes?.color || '#E0E0E0',
   isPrinting: isPrinting(hass, config),
   isPaused: isPaused(hass, config),
+  lastPrintName: getLastPrintName(hass, config),
   chamber_light_entity: config.chamber_light_entity,
   aux_fan_entity: config.aux_fan_entity && hass.states[config.aux_fan_entity] ? config.aux_fan_entity : null,
   camera_entity: config.camera_entity
