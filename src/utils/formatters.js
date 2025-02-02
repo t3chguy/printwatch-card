@@ -61,5 +61,5 @@ export const formatEndTime = (remainingMinutes, hass) => {
 export const formatTemperature = (value, unit) => {
   const temp = parseFloat(value);
   if (isNaN(temp)) return '---';
-  return `${temp.toFixed(1)}${unit}`;
+  return `${temp.toFixed(0)}${unit}`;
 };
