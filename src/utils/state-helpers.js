@@ -30,7 +30,19 @@ export const getAmsSlots = (hass, config) => {
     config.ams_slot1_entity,
     config.ams_slot2_entity,
     config.ams_slot3_entity,
-    config.ams_slot4_entity
+    config.ams_slot4_entity,
+    config.ams_slot5_entity,
+    config.ams_slot6_entity,
+    config.ams_slot7_entity,
+    config.ams_slot8_entity,
+    config.ams_slot9_entity,
+    config.ams_slot10_entity,
+    config.ams_slot11_entity,
+    config.ams_slot12_entity,
+    config.ams_slot13_entity,
+    config.ams_slot14_entity,
+    config.ams_slot15_entity,
+    config.ams_slot16_entity
   ];
 
   // Check for AMS system

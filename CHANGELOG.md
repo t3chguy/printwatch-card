@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 * Added weight and length details to card
 * Added localizaton support, used AI to translate to German, but please submit PR to actual human translations.
 * AI assisted refactor
+* Support for more AMS's up to 16 total colros
 
 
 ## [1.0.10] - 2024-01-30

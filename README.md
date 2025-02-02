@@ -22,6 +22,9 @@ A feature-rich Home Assistant card for monitoring and controlling your P1S 3D pr
 - ⚡ Local API (LAN Mode)
 - 🌑 Native Theme support
 - 🌡️ Real-time temperature monitoring for bed and nozzle
+- 📷 G-Code preview image (requires HA Bambu Lab plugin update)
+- 🏷️ Display print weight and length details
+-🌍 Localization support (initial translations in German, more contributions welcome!)
 
 ## Prerequisites
 
@@ -59,6 +62,11 @@ A feature-rich Home Assistant card for monitoring and controlling your P1S 3D pr
 
 Add the card to your dashboard with this basic configuration:
 
+
+## Configuration
+
+Add the card to your dashboard with this basic configuration:
+
 ```yaml
 type: custom:printwatch-card
 printer_name: P1S
@@ -77,6 +85,8 @@ ams_slot1_entity: sensor.p1s_ams_tray_1
 ams_slot2_entity: sensor.p1s_ams_tray_2
 ams_slot3_entity: sensor.p1s_ams_tray_3
 ams_slot4_entity: sensor.p1s_ams_tray_4
+ams_slot5_entity: sensor.p1s_ams_tray_5
+...
 camera_entity: image.p1s_camera
 cover_image_entity: image.p1s_cover_image
 pause_button_entity: button.p1s_pause_printing
@@ -84,6 +94,8 @@ resume_button_entity: button.p1s_resume_printing
 stop_button_entity: button.p1s_stop_printing
 chamber_light_entity: light.p1s_chamber_light
 aux_fan_entity: fan.p1s_aux_fan
+print_weight_entity: sensor.p1s_print_weight
+print_length_entity: sensor.p1s_print_length
 ```
 
 
@@ -105,6 +117,13 @@ aux_fan_entity: fan.p1s_aux_fan
 3. **Controls not working**
    - Verify that your user has proper permissions for the entities
    - Check that button entities are available and not in an error state
+
+4. **G-Code preview not appearing**
+   - Ensure you have the latest version of the HA Bambu Lab plugin
+   - Enable G-Code preview in the plugin settings
+5. **Localization issues**
+   - Some translations are AI-generated; if you notice errors, consider submitting improvements!
+
 
 ## Contributing
 

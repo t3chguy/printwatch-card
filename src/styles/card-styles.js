@@ -269,22 +269,18 @@ export const cardStyles = css`
 
   /* Materials */
   .materials {
-    display: flex;
-    justify-content: center;
-    width: calc(100% - 48px);
-    margin: 0 24px;
-    gap: 32px;
-    position: relative;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+    gap: 16px;
+    padding: 16px;
   }
 
   .material-slot {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 60px;
     gap: 8px;
     text-align: center;
-    position: relative;
   }
 
   .material-circle {
