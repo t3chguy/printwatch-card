@@ -1,0 +1,65 @@
+{
+  "entity": {
+    "sensor": {
+      "state": {
+        "idle": "Idle",
+        "printing": "Printing",
+        "paused": "Paused",
+        "complete": "Complete",
+        "offline": "Offline",
+        "unknown": "Unknown",
+        "running": "Running"
+      }
+    }
+  },
+  "ui": {
+    "card": {
+      "printwatch": {
+        "not_printing": "Not currently printing",
+        "last_print": "Last print: {name}",
+        "printer_offline": "Printer offline",
+        "camera_unavailable": "Camera unavailable",
+        "time": {
+          "complete": "Complete",
+          "left": "Left",
+          "hours": "h",
+          "minutes": "m"
+        },
+        "print": {
+          "layer": "Layer",
+          "progress": "Progress",
+          "weight": "Weight",
+          "length": "Length"
+        },
+        "temperatures": {
+          "bed": "Bed",
+          "nozzle": "Nozzle",
+          "speed": "Speed"
+        },
+        "controls": {
+          "pause": "Pause",
+          "resume": "Resume",
+          "stop": "Stop",
+          "cancel": "Cancel"
+        },
+        "dialogs": {
+          "pause": {
+            "title": "Confirm Pause",
+            "message": "Are you sure you want to pause the current print? This may affect print quality.",
+            "confirm": "Confirm"
+          },
+          "stop": {
+            "title": "Confirm Stop",
+            "message": "Are you sure you want to stop the current print? This action cannot be undone.",
+            "confirm": "Stop Print"
+          }
+        },
+        "materials": {
+          "empty": "Empty",
+          "unknown": "Unknown",
+          "external_spool": "External Spool"
+        }
+      }
+    }
+  }
+}

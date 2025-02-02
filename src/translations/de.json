@@ -1,0 +1,65 @@
+{
+  "entity": {
+    "sensor": {
+      "state": {
+        "idle": "Bereit",
+        "printing": "Druckt",
+        "paused": "Pausiert",
+        "complete": "Fertig",
+        "offline": "Offline",
+        "unknown": "Unbekannt",
+        "running": "Läuft"
+      }
+    }
+  },
+  "ui": {
+    "card": {
+      "printwatch": {
+        "not_printing": "Aktuell wird nicht gedruckt",
+        "last_print": "Letzter Druck: {name}",
+        "printer_offline": "Drucker offline",
+        "camera_unavailable": "Kamera nicht verfügbar",
+        "time": {
+          "complete": "Fertig",
+          "left": "Verbleibend",
+          "hours": "Std",
+          "minutes": "Min"
+        },
+        "print": {
+          "layer": "Schicht",
+          "progress": "Fortschritt",
+          "weight": "Gewicht",
+          "length": "Länge"
+        },
+        "temperatures": {
+          "bed": "Bett",
+          "nozzle": "Düse",
+          "speed": "Geschwindigkeit"
+        },
+        "controls": {
+          "pause": "Pause",
+          "resume": "Fortsetzen",
+          "stop": "Stopp",
+          "cancel": "Abbrechen"
+        },
+        "dialogs": {
+          "pause": {
+            "title": "Pause bestätigen",
+            "message": "Möchten Sie den aktuellen Druck wirklich pausieren? Dies kann die Druckqualität beeinträchtigen.",
+            "confirm": "Bestätigen"
+          },
+          "stop": {
+            "title": "Stopp bestätigen",
+            "message": "Möchten Sie den aktuellen Druck wirklich stoppen? Diese Aktion kann nicht rückgängig gemacht werden.",
+            "confirm": "Druck stoppen"
+          }
+        },
+        "materials": {
+          "empty": "Leer",
+          "unknown": "Unbekannt",
+          "external_spool": "Externe Spule"
+        }
+      }
+    }
+  }
+}

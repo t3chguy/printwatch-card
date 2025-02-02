@@ -24,9 +24,17 @@ export default {
  */`
   },
   plugins: [
-    resolve(),
+    resolve({
+      browser: true,
+      preferBuiltins: false,
+      extensions: ['.js', '.json']
+    }),
     commonjs(),
-    json(),
+    json({
+      compact: true,
+      preferConst: true,
+      namedExports: true
+    }),
     replace({
       preventAssignment: true,
       values: {

@@ -1,16 +1,14 @@
 import { css } from 'lit';
 
 export const cardStyles = css`
-  /* Previous styles remain the same */
-
   /* Print preview image */
   .preview-image {
     flex-shrink: 0;
-    width: 80px;
-    height: 80px;
+    width: 100px;
     border-radius: 8px;
     overflow: hidden;
     background: var(--secondary-background-color);
+    align-self: stretch;
   }
 
   .preview-image img {
@@ -22,8 +20,9 @@ export const cardStyles = css`
   /* Updated print preview styles */
   .print-preview {
     display: flex;
-    gap: 16px;
-    align-items: flex-start;
+    gap: 8px;
+    align-items: stretch;
+    min-height: 100px;
   }
 
   .print-details {
@@ -31,15 +30,21 @@ export const cardStyles = css`
     padding: 0 8px;
   }
 
- .print-details h3 {
-  margin: 0 0 8px 0;
-  font-size: 16px;
-  color: var(--primary-text-color);
-  white-space: normal;
-  overflow-wrap: break-word;
-  word-wrap: break-word;
-  line-height: 1.4;
-}
+  .print-details h3 {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    color: var(--primary-text-color);
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    line-height: 1.4;
+  }
+
+  .print-details .print-stats {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    color: var(--secondary-text-color);
+  }
 
   /* Rest of the styles */
   .card {
@@ -150,10 +155,10 @@ export const cardStyles = css`
   }
 
   .print-status {
-  background: var(--ha-card-background);
-  padding: 16px 0;
-  margin-bottom: 16px;
-}
+    background: var(--ha-card-background);
+    padding: 16px 0;
+    margin-bottom: 16px;
+  }
 
   .not-printing {
     background: var(--ha-card-background);
@@ -181,7 +186,7 @@ export const cardStyles = css`
   .layer-info {
     color: var(--secondary-text-color);
     font-size: 14px;
-    }
+  }
 
   .progress-bar {
     height: 4px;

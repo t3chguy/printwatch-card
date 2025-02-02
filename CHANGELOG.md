@@ -6,6 +6,9 @@ All notable changes to this project will be documented in this file.
 
 * Added preview G-Code image (Make sure to update to latest HA Bambu Lab plug and enable it in options)
 * Reordered some content to better fit the G-Code image
+* Rather than hardcoding unit of measure fetch from sensor
+* Added weight and length details to card
+* Added localizaton support, used AI to translate to German, but please submit PR to actual human translations.
 
 
 ## [1.0.10] - 2024-01-30

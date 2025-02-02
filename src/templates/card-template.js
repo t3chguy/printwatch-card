@@ -1,28 +1,30 @@
 import { html } from 'lit';
+import { localize } from '../utils/localize';
+import { formatDuration, formatEndTime } from '../utils/formatters';
 
 /**
  * Generate dialog template
  */
-const dialogTemplate = (id, heading, message, confirmText, confirmStyle = '') => html`
+const dialogTemplate = (id, type) => html`
   <ha-dialog 
     id="${id}"
-    heading="${heading}"
+    heading="${localize.t(`dialogs.${type}.title`)}"
   >
     <div>
-      ${message}
+      ${localize.t(`dialogs.${type}.message`)}
     </div>
     <mwc-button 
       slot="primaryAction" 
       dialogAction="confirm"
-      style="${confirmStyle}"
+      style="${type === 'stop' ? 'color: rgb(229, 57, 53);' : ''}"
     >
-      ${confirmText}
+      ${localize.t(`dialogs.${type}.confirm`)}
     </mwc-button>
     <mwc-button 
       slot="secondaryAction" 
       dialogAction="cancel"
     >
-      Cancel
+      ${localize.t('controls.cancel')}
     </mwc-button>
   </ha-dialog>
 `;
@@ -31,50 +33,42 @@ const dialogTemplate = (id, heading, message, confirmText, confirmStyle = '') =>
  * Generate the main card template
  */
 export const cardTemplate = (context) => {
-  const { entities, hass, amsSlots, formatters } = context;
-  
-  // Find the active slot if using AMS
-  const activeSlot = amsSlots.find(slot => slot.active === true);
+  const { entities, hass, amsSlots } = context;
   
   // Check if cover image is available
-  const hasCoverImage = entities.cover_image_entity && hass.states[entities.cover_image_entity]?.attributes?.entity_picture;
+  const hasCoverImage = entities.cover_image_entity && 
+    hass.states[entities.cover_image_entity]?.attributes?.entity_picture;
+  
+  // Get temperature units from sensors
+  const bedTempUnit = hass.states['sensor.p1s_01p00a382500072_bed_temperature']?.attributes?.unit_of_measurement || '';
+  const nozzleTempUnit = hass.states['sensor.p1s_01p00a382500072_nozzle_temperature']?.attributes?.unit_of_measurement || '';
   
   return html`
-    ${dialogTemplate(
-      'pauseDialog',
-      'Confirm Pause',
-      'Are you sure you want to pause the current print? This may affect print quality.',
-      'Confirm'
-    )}
-
-    ${dialogTemplate(
-      'stopDialog',
-      'Confirm Stop',
-      'Are you sure you want to stop the current print? This action cannot be undone.',
-      'Stop Print',
-      'color: rgb(229, 57, 53);'
-    )}
+    ${dialogTemplate('pauseDialog', 'pause')}
+    ${dialogTemplate('stopDialog', 'stop')}
 
     <div class="card">
       <div class="header">
         <div>
           <div class="printer-name">${entities.name}</div>
           <div class="status">
-            ${entities.status}
+            ${localize.localize(`entity.sensor.state.${entities.status}`)}
             ${entities.isPrinting ? html`
-              <span class="progress-text">${Math.round(entities.progress)}% | Layer: ${entities.currentLayer}/${entities.totalLayers} </span>
+              <span class="progress-text">
+                ${Math.round(entities.progress)}% | 
+                ${localize.t('print.layer')}: ${entities.currentLayer}/${entities.totalLayers}
+              </span>
             ` : ''}
-            
           </div>
           ${entities.isPrinting ? html`
-            
             <div class="progress-bar">
-                <div class="progress-fill" style="width: ${entities.progress}%"></div>
-              </div>
-                <div class="layer-info"> Left: ${formatters.formatDuration(entities.remainingTime)}, ${formatters.formatEndTime(entities.remainingTime, hass)}</div>
-              
+              <div class="progress-fill" style="width: ${entities.progress}%"></div>
+            </div>
+            <div class="layer-info">
+              ${localize.t('time.left')}: ${formatDuration(entities.remainingTime)}, 
+              ${formatEndTime(entities.remainingTime, hass)}
+            </div>
           ` : ''}
-          
         </div>
         <div class="header-controls">
           <button 
@@ -108,7 +102,11 @@ export const cardTemplate = (context) => {
       ` : html`
         <div class="offline-message">
           <ha-icon icon="mdi:printer-off"></ha-icon>
-          <span>${context.isOnline ? 'Camera unavailable' : 'Printer offline'}</span>
+          <span>
+            ${context.isOnline ? 
+              localize.t('camera_unavailable') : 
+              localize.t('printer_offline')}
+          </span>
         </div>
       `}
       
@@ -126,43 +124,52 @@ export const cardTemplate = (context) => {
             ` : ''}
             <div class="print-details">
               <h3>${entities.taskName}</h3>
-             
-            
+              <div class="print-stats">
+                ${localize.t('print.length')}: ${hass.states['sensor.p1s_print_length']?.state || '0'} 
+                ${hass.states['sensor.p1s_print_length']?.attributes?.unit_of_measurement || ''} | 
+                ${localize.t('print.weight')}: ${hass.states['sensor.p1s_print_weight']?.state || '0'} 
+                ${hass.states['sensor.p1s_print_weight']?.attributes?.unit_of_measurement || ''}
+              </div>
 
               <div class="controls">
                 <button 
                   class="btn btn-pause" 
                   data-action="${entities.isPaused ? 'resume' : 'pause'}"
                 >
-                  ${entities.isPaused ? 'Resume' : 'Pause'}
+                  ${entities.isPaused ? 
+                    localize.t('controls.resume') : 
+                    localize.t('controls.pause')}
                 </button>
-                <button class="btn btn-stop">Stop</button>
+                <button class="btn btn-stop">
+                  ${localize.t('controls.stop')}
+                </button>
               </div>
-              
             </div>
           </div>
         </div>
       ` : html`
         <div class="not-printing">
-          <div class="message">Not currently printing</div>
+          <div class="message">${localize.t('not_printing')}</div>
           ${entities.lastPrintName ? html`
-            <div class="last-print">Last print: ${entities.lastPrintName}</div>
+            <div class="last-print">
+              ${localize.t('last_print', { name: entities.lastPrintName })}
+            </div>
           ` : ''}
         </div>
       `}
       
       <div class="temperatures">
         <div class="temp-item">
-          <div class="temp-value">${entities.bedTemp}°</div>
-          <div>Bed</div>
+          <div class="temp-value">${entities.bedTemp}${bedTempUnit}</div>
+          <div>${localize.t('temperatures.bed')}</div>
         </div>
         <div class="temp-item">
-          <div class="temp-value">${entities.nozzleTemp}°</div>
-          <div>Nozzle</div>
+          <div class="temp-value">${entities.nozzleTemp}${nozzleTempUnit}</div>
+          <div>${localize.t('temperatures.nozzle')}</div>
         </div>
         <div class="temp-item">
           <div class="temp-value">${entities.speedProfile}%</div>
-          <div>Speed</div>
+          <div>${localize.t('temperatures.speed')}</div>
         </div>
       </div>
       
@@ -173,7 +180,9 @@ export const cardTemplate = (context) => {
               class="material-circle ${slot.active === true ? 'active' : ''}"
               style="background-color: ${slot.color || '#E0E0E0'}"
             ></div>
-            <div class="material-type">${slot.type || 'Empty'}</div>
+            <div class="material-type">
+              ${slot.type || localize.t('materials.empty')}
+            </div>
           </div>
         `)}
       </div>
