@@ -28,7 +28,7 @@ export const cardStyles = css`
 
   .print-details {
     flex-grow: 1;
-    padding: 0 8px 0 8px;
+    padding: 0 8px;
   }
 
  .print-details h3 {
@@ -178,27 +178,16 @@ export const cardStyles = css`
     opacity: 0.8;
   }
 
-  .time-info {
-    display: flex;
-    justify-content: space-between;
-    margin: 4px 0;
+  .layer-info {
     color: var(--secondary-text-color);
     font-size: 14px;
-  }
-
-  .time-info .remaining {
-    color: var(--primary-text-color);
-  }
-
-  .time-info .completion {
-    color: var(--secondary-text-color);
-  }
+    }
 
   .progress-bar {
     height: 4px;
     background: var(--secondary-background-color);
     border-radius: 2px;
-    margin: 8px 0;
+    margin: 4px 0;
   }
 
   .progress-fill {

@@ -62,13 +62,19 @@ export const cardTemplate = (context) => {
           <div class="status">
             ${entities.status}
             ${entities.isPrinting ? html`
-              <span class="progress-text">${Math.round(entities.progress)}% | Done: ${formatters.formatEndTime(entities.remainingTime, hass)}</span>
+              <span class="progress-text">${Math.round(entities.progress)}% | Layer: ${entities.currentLayer}/${entities.totalLayers} </span>
             ` : ''}
             
           </div>
-          <div class="progress-bar">
+          ${entities.isPrinting ? html`
+            
+            <div class="progress-bar">
                 <div class="progress-fill" style="width: ${entities.progress}%"></div>
               </div>
+                <div class="layer-info"> Left: ${formatters.formatDuration(entities.remainingTime)}, ${formatters.formatEndTime(entities.remainingTime, hass)}</div>
+              
+          ` : ''}
+          
         </div>
         <div class="header-controls">
           <button 
@@ -120,15 +126,8 @@ export const cardTemplate = (context) => {
             ` : ''}
             <div class="print-details">
               <h3>${entities.taskName}</h3>
-              <div class="progress-bar">
-                <div class="progress-fill" style="width: ${entities.progress}%"></div>
-              </div>
-              <div>Printed layers: ${entities.currentLayer}/${entities.totalLayers}</div>
-              <div class="time-info">
-                <span class="remaining">
-                  Time left: ${formatters.formatDuration(entities.remainingTime)}
-                </span>
-              </div>
+             
+            
 
               <div class="controls">
                 <button 
