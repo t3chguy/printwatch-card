@@ -1,7 +1,8 @@
+// src/styles/card-styles.js
 import { css } from 'lit';
 
 export const cardStyles = css`
-  /* Print preview image */
+  /* Print preview */
   .preview-image {
     flex-shrink: 0;
     width: 100px;
@@ -17,7 +18,6 @@ export const cardStyles = css`
     object-fit: cover;
   }
 
-  /* Updated print preview styles */
   .print-preview {
     display: flex;
     gap: 8px;
@@ -46,7 +46,7 @@ export const cardStyles = css`
     color: var(--secondary-text-color);
   }
 
-  /* Rest of the styles */
+  /* Card Layout */
   .card {
     background: var(--ha-card-background, var(--card-background-color));
     border-radius: var(--ha-card-border-radius, 12px);
@@ -92,6 +92,7 @@ export const cardStyles = css`
     align-items: center;
   }
 
+  /* Control Buttons */
   .icon-button {
     background: none;
     border: none;
@@ -118,6 +119,7 @@ export const cardStyles = css`
     height: 24px;
   }
 
+  /* Camera Feed */
   .camera-feed {
     width: 100%;
     aspect-ratio: 16 / 9;
@@ -151,9 +153,10 @@ export const cardStyles = css`
     border-radius: 8px;
     font-size: 16px;
     background-color: color-mix(in srgb, var(--card-background-color) 80%, transparent);
-    text-transform: capitalize; 
+    text-transform: capitalize;
   }
 
+  /* Print Status */
   .print-status {
     background: var(--ha-card-background);
     padding: 16px 0;
@@ -203,6 +206,7 @@ export const cardStyles = css`
     transition: width 0.3s;
   }
 
+  /* Control Buttons */
   .controls {
     display: flex;
     gap: 8px;
@@ -228,6 +232,7 @@ export const cardStyles = css`
     color: var(--text-primary-color);
   }
 
+  /* Temperature Display */
   .temperatures {
     display: flex;
     justify-content: space-around;
@@ -262,6 +267,7 @@ export const cardStyles = css`
     margin-bottom: 4px;
   }
 
+  /* Materials */
   .materials {
     display: flex;
     justify-content: center;
