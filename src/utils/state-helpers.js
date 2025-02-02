@@ -153,5 +153,8 @@ export const getEntityStates = (hass, config) => ({
   lastPrintName: getLastPrintName(hass, config),
   chamber_light_entity: config.chamber_light_entity,
   aux_fan_entity: config.aux_fan_entity && hass.states[config.aux_fan_entity] ? config.aux_fan_entity : null,
-  camera_entity: config.camera_entity
+  camera_entity: config.camera_entity,
+  cover_image_entity: config.cover_image_entity,
+  print_weight_entity: parseInt(hass.states[config.print_weight_entity]?.state || '0'),
+  print_length_entity: parseInt(hass.states[config.print_length_entity]?.state || '0'),
 });

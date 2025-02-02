@@ -36,6 +36,9 @@ export const cardTemplate = (context) => {
   // Find the active slot if using AMS
   const activeSlot = amsSlots.find(slot => slot.active === true);
   
+  // Check if cover image is available
+  const hasCoverImage = entities.cover_image_entity && hass.states[entities.cover_image_entity]?.attributes?.entity_picture;
+  
   return html`
     ${dialogTemplate(
       'pauseDialog',
@@ -61,8 +64,11 @@ export const cardTemplate = (context) => {
             ${entities.isPrinting ? html`
               <span class="progress-text">${Math.round(entities.progress)}% | Done: ${formatters.formatEndTime(entities.remainingTime, hass)}</span>
             ` : ''}
+            
           </div>
-       
+          <div class="progress-bar">
+                <div class="progress-fill" style="width: ${entities.progress}%"></div>
+              </div>
         </div>
         <div class="header-controls">
           <button 
@@ -103,17 +109,27 @@ export const cardTemplate = (context) => {
       ${entities.isPrinting ? html`
         <div class="print-status">
           <div class="print-preview">
+            ${hasCoverImage ? html`
+              <div class="preview-image">
+                <img 
+                  src="${hass.states[entities.cover_image_entity].attributes.entity_picture}" 
+                  alt="Print Preview"
+                  @error=${context.handleImageError}
+                />
+              </div>
+            ` : ''}
             <div class="print-details">
               <h3>${entities.taskName}</h3>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: ${entities.progress}%"></div>
+              </div>
               <div>Printed layers: ${entities.currentLayer}/${entities.totalLayers}</div>
               <div class="time-info">
                 <span class="remaining">
                   Time left: ${formatters.formatDuration(entities.remainingTime)}
                 </span>
               </div>
-              <div class="progress-bar">
-                <div class="progress-fill" style="width: ${entities.progress}%"></div>
-              </div>
+
               <div class="controls">
                 <button 
                   class="btn btn-pause" 
@@ -123,6 +139,7 @@ export const cardTemplate = (context) => {
                 </button>
                 <button class="btn btn-stop">Stop</button>
               </div>
+              
             </div>
           </div>
         </div>

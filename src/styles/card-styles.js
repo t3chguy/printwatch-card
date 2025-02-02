@@ -1,6 +1,47 @@
 import { css } from 'lit';
 
 export const cardStyles = css`
+  /* Previous styles remain the same */
+
+  /* Print preview image */
+  .preview-image {
+    flex-shrink: 0;
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden;
+    background: var(--secondary-background-color);
+  }
+
+  .preview-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Updated print preview styles */
+  .print-preview {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+
+  .print-details {
+    flex-grow: 1;
+    padding: 0 8px 0 8px;
+  }
+
+ .print-details h3 {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  color: var(--primary-text-color);
+  white-space: normal;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  line-height: 1.4;
+}
+
+  /* Rest of the styles */
   .card {
     background: var(--ha-card-background, var(--card-background-color));
     border-radius: var(--ha-card-border-radius, 12px);
@@ -10,7 +51,6 @@ export const cardStyles = css`
     overflow: hidden;
   }
 
-  /* Header styles */
   .header {
     display: flex;
     justify-content: space-between;
@@ -41,7 +81,6 @@ export const cardStyles = css`
     opacity: 0.9;
   }
 
-  /* Control buttons */
   .header-controls {
     display: flex;
     gap: 12px;
@@ -74,7 +113,6 @@ export const cardStyles = css`
     height: 24px;
   }
 
-  /* Camera feed */
   .camera-feed {
     width: 100%;
     aspect-ratio: 16 / 9;
@@ -99,11 +137,6 @@ export const cardStyles = css`
     gap: 8px;
   }
 
-  .offline-message ha-icon {
-    --mdc-icon-size: 48px;
-    opacity: 0.5;
-  }
-
   .camera-label {
     position: absolute;
     top: 4px;
@@ -116,12 +149,11 @@ export const cardStyles = css`
     text-transform: capitalize; 
   }
 
-  /* Print status section */
   .print-status {
-    background: var(--ha-card-background);
-    padding: 16px;
-    margin-bottom: 16px;
-  }
+  background: var(--ha-card-background);
+  padding: 16px 0;
+  margin-bottom: 16px;
+}
 
   .not-printing {
     background: var(--ha-card-background);
@@ -146,26 +178,6 @@ export const cardStyles = css`
     opacity: 0.8;
   }
 
-  /* Print preview */
-  .print-preview {
-    display: flex;
-    gap: 16px;
-    align-items: center;
-  }
-
-  .print-details {
-    color: var(--primary-text-color);
-    width: 100%
-  }
-
-  .print-details h3 {
-    margin: 0 0 8px 0;
-    font-size: 16px;
-    color: var(--primary-text-color);
-    overflow: new-line;
-  }
-
-  /* Time information */
   .time-info {
     display: flex;
     justify-content: space-between;
@@ -182,7 +194,6 @@ export const cardStyles = css`
     color: var(--secondary-text-color);
   }
 
-  /* Progress bar */
   .progress-bar {
     height: 4px;
     background: var(--secondary-background-color);
@@ -198,7 +209,6 @@ export const cardStyles = css`
     transition: width 0.3s;
   }
 
-  /* Control buttons */
   .controls {
     display: flex;
     gap: 8px;
@@ -224,7 +234,6 @@ export const cardStyles = css`
     color: var(--text-primary-color);
   }
 
-  /* Temperature section */
   .temperatures {
     display: flex;
     justify-content: space-around;
@@ -259,7 +268,6 @@ export const cardStyles = css`
     margin-bottom: 4px;
   }
 
-  /* Materials section */
   .materials {
     display: flex;
     justify-content: center;
