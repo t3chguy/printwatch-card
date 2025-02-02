@@ -27,7 +27,9 @@ export default {
     resolve({
       browser: true,
       preferBuiltins: false,
-      extensions: ['.js', '.json']
+      extensions: ['.js', '.json'],
+      moduleDirectories: ['node_modules'],
+      mainFields: ['browser', 'module', 'main']
     }),
     commonjs(),
     json({
@@ -44,7 +46,23 @@ export default {
     }),
     babel({
       babelHelpers: 'bundled',
-      exclude: 'node_modules/**'
+      exclude: 'node_modules/**',
+      presets: [
+        ['@babel/preset-env', {
+          targets: {
+            browsers: [
+              'last 2 Chrome versions',
+              'last 2 Firefox versions',
+              'last 2 Safari versions',
+              'last 2 iOS versions',
+              'last 1 Android version',
+              'last 1 ChromeAndroid version',
+              'ie 11'
+            ]
+          },
+          modules: false
+        }]
+      ]
     }),
     terser({
       format: {
