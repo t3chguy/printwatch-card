@@ -8,8 +8,8 @@ A feature-rich Home Assistant card for monitoring and controlling your P1S 3D pr
 ### Dark Mode
 ![PrintWatch Dark Mode](assets/dark-mode-min.png)  
 
-### Theme Support Example
-![PrintWatch Nord](assets/nord-min.png)
+### German Example
+![PrintWatch Nord](assets/german.png)
 
 ## Features
 
@@ -17,7 +17,7 @@ A feature-rich Home Assistant card for monitoring and controlling your P1S 3D pr
 - 📊 Print progress tracking with layer count and estimated completion time
 - 🎨 AMS/Material status visualization including current filament
 - 💡 Quick controls for chamber light and auxiliary fan
-- ⏯️ Print control buttons (pause/resume/stop) with confirmation dialogs
+- ⏯️ Print control buttons (pause/resume/stop) with [confirmation dialogs](assets/pause.png)
 - 🎛️ Speed profile monitoring (controls to come)
 - ⚡ Local API (LAN Mode)
 - 🌑 Native Theme support
@@ -25,7 +25,7 @@ A feature-rich Home Assistant card for monitoring and controlling your P1S 3D pr
 - 📷 G-Code preview image (requires HA Bambu Lab plugin update)
 - 🏷️ Display print weight and length details
 -🌍 Localization support (initial translations in German, more contributions welcome!)
-
+pa
 ## Prerequisites
 
 - Home Assistant
