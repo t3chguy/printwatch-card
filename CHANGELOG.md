@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2024-02-2
+
+* Added preview G-Code image (Make sure to update to latest HA Bambu Lab plug and enable it in options)
+* Reordered some content to better fit the G-Code image
+
+
 ## [1.0.10] - 2024-01-30
 
 * Fixed camera aspect ratio, thanks [CasperVerswijvelt](https://github.com/CasperVerswijvelt)

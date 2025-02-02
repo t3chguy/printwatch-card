@@ -78,7 +78,7 @@ export const cardStyles = css`
   .camera-feed {
     width: 100%;
     aspect-ratio: 16 / 9;
-    border-radius: 12px;
+    border-radius: 8px;
     margin-bottom: 16px;
     position: relative;
     background: var(--secondary-background-color);
@@ -88,7 +88,7 @@ export const cardStyles = css`
   .offline-message {
     width: 100%;
     aspect-ratio: 16 / 9;
-    border-radius: 12px;
+    border-radius: 8px;
     margin-bottom: 16px;
     background: var(--secondary-background-color);
     display: flex;
@@ -110,7 +110,7 @@ export const cardStyles = css`
     left: 4px;
     color: var(--secondary-text-color);
     padding: 4px 8px;
-    border-radius: 12px;
+    border-radius: 8px;
     font-size: 16px;
     background-color: color-mix(in srgb, var(--card-background-color) 80%, transparent);
     text-transform: capitalize; 

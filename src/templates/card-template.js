@@ -59,9 +59,10 @@ export const cardTemplate = (context) => {
           <div class="status">
             ${entities.status}
             ${entities.isPrinting ? html`
-              <span class="progress-text">${Math.round(entities.progress)}%</span>
+              <span class="progress-text">${Math.round(entities.progress)}% | Done: ${formatters.formatEndTime(entities.remainingTime, hass)}</span>
             ` : ''}
           </div>
+       
         </div>
         <div class="header-controls">
           <button 
@@ -108,9 +109,6 @@ export const cardTemplate = (context) => {
               <div class="time-info">
                 <span class="remaining">
                   Time left: ${formatters.formatDuration(entities.remainingTime)}
-                </span>
-                <span class="completion">
-                  Done at: ${formatters.formatEndTime(entities.remainingTime, hass)}
                 </span>
               </div>
               <div class="progress-bar">
