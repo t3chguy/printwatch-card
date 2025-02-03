@@ -2,13 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.1] - 2024-02-2
+
+BREAKING CHANGES - Please update your YAML based on the README
+
+* Added ability to change Bed Temp, Nozzle Temp, and Print Speed
+* Fixed some aux fan stuff coming in when it shouldn't have
+
 ## [1.1.0] - 2024-02-2
 
 * Added preview G-Code image (Make sure to update to latest HA Bambu Lab plug and enable it in options)
 * Reordered some content to better fit the G-Code image
 * Rather than hardcoding unit of measure fetch from sensor
 * Added weight and length details to card
-* Added localizaton support, used AI to translate to German, but please submit PR to actual human translations.
+* Added localization support, used AI to translate to German, but please submit PR to actual human translations.
 * AI assisted refactor
 * Support for more AMS's up to 16 total colors
 
