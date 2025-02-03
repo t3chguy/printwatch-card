@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [1.1.1] - 2024-02-2
+## [1.2.0] - 2024-02-2
 
 BREAKING CHANGES - Please update your YAML based on the README
 
