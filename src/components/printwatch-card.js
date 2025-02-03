@@ -64,6 +64,26 @@ class PrintWatchCard extends LitElement {
     this._cameraError = false;
   }
 
+  _toggleLight() {
+    const lightEntity = this.hass.states[this.config.chamber_light_entity];
+    if (!lightEntity) return;
+
+    const service = lightEntity.state === 'on' ? 'turn_off' : 'turn_on';
+    this.hass.callService('light', service, {
+      entity_id: this.config.chamber_light_entity,
+    });
+  }
+
+  _toggleFan() {
+    const fanEntity = this.hass.states[this.config.aux_fan_entity];
+    if (!fanEntity) return;
+
+    const service = fanEntity.state === 'on' ? 'turn_off' : 'turn_on';
+    this.hass.callService('fan', service, {
+      entity_id: this.config.aux_fan_entity,
+    });
+  }
+
   updated(changedProps) {
     super.updated(changedProps);
     if (changedProps.has('hass')) {

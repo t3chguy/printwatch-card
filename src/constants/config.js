@@ -26,7 +26,6 @@ export const DEFAULT_CONFIG = {
   resume_button_entity: 'button.p1s_01p00a382500072_resume_printing',
   stop_button_entity: 'button.p1s_01p00a382500072_stop_printing',
   chamber_light_entity: 'light.p1s_01p00a382500072_chamber_light',
-  aux_fan_entity: 'fan.p1s_01p00a382500072_aux_fan',
   online_entity: 'binary_sensor.p1s_01p00a382500072_online',
   print_weight_entity: 'sensor.p1s_print_weight',
   print_length_entity: 'sensor.p1s_print_length'

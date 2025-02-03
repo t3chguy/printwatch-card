@@ -124,7 +124,7 @@ export const getEntityStates = (hass, config) => {
     nozzle_target_temp_entity: config.nozzle_target_temp_entity,
     speed_profile_entity: config.speed_profile_entity,
     chamber_light_entity: config.chamber_light_entity,
-    aux_fan_entity: config.aux_fan_entity,
+    aux_fan_entity: config.aux_fan_entity && hass.states[config.aux_fan_entity] ? config.aux_fan_entity : null,
     camera_entity: config.camera_entity,
     cover_image_entity: config.cover_image_entity,
     print_weight_entity: parseInt(getState(config.print_weight_entity)),
