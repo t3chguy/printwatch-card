@@ -46,13 +46,22 @@ export const temperatureDialogTemplate = (dialogConfig, hass) => {
     }
   };
 
+  let selectedValue = dialogConfig.currentValue;
+
+  const handleSelectionChange = (e) => {
+    selectedValue = e.target.value;
+    // Prevent dialog from closing
+    e.stopPropagation();
+  };
+
   const renderContent = () => {
     if (dialogConfig.type === 'speed') {
       return html`
         <ha-select
           label=${localize.t('temperatures.speed_profile')}
-          .value=${dialogConfig.currentValue}
-          @selected=${(e) => e.target.value = e.detail.value}
+          .value=${selectedValue}
+          @selected=${handleSelectionChange}
+          @closed=${(e) => e.stopPropagation()}
           class="speed-select"
           fixedMenuPosition
           naturalMenuWidth
