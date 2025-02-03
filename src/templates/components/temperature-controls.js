@@ -1,3 +1,4 @@
+// src/templates/components/temperature-controls.js
 import { html } from 'lit';
 import { localize } from '../../utils/localize';
 
@@ -5,6 +6,7 @@ export const temperatureDialogTemplate = (dialogConfig, hass) => {
   if (!dialogConfig?.open) return html``;
 
   const handleSubmit = (e) => {
+    e.preventDefault();
     // Get the dialog element from the event path
     const dialog = e.target.closest('ha-dialog');
     if (!dialog) return;
@@ -20,19 +22,28 @@ export const temperatureDialogTemplate = (dialogConfig, hass) => {
 
     if (value === null || value === undefined) return;
 
+    // Call the appropriate service based on type
     if (dialogConfig.type === 'speed') {
       hass.callService('select', 'select_option', {
         entity_id: dialogConfig.entityId,
         option: value
+      }).then(() => {
+        console.log('Speed profile updated successfully');
+        dialogConfig.onClose();
+      }).catch(err => {
+        console.error('Error updating speed profile:', err);
       });
     } else {
       hass.callService('number', 'set_value', {
         entity_id: dialogConfig.entityId,
         value: value
+      }).then(() => {
+        console.log('Temperature updated successfully');
+        dialogConfig.onClose();
+      }).catch(err => {
+        console.error('Error updating temperature:', err);
       });
     }
-    
-    dialogConfig.onClose();
   };
 
   const renderContent = () => {
