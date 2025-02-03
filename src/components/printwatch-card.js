@@ -13,6 +13,7 @@ class PrintWatchCard extends LitElement {
       _lastCameraUpdate: { type: Number },
       _cameraUpdateInterval: { type: Number },
       _cameraError: { type: Boolean },
+      _dialogConfig: { state: true }
     };
   }
 
@@ -25,6 +26,7 @@ class PrintWatchCard extends LitElement {
     this._lastCameraUpdate = 0;
     this._cameraUpdateInterval = DEFAULT_CAMERA_REFRESH_RATE;
     this._cameraError = false;
+    this._dialogConfig = { open: false };
     this.formatters = {
       formatDuration,
       formatEndTime
@@ -96,72 +98,6 @@ class PrintWatchCard extends LitElement {
     }
   }
 
-  _handlePauseDialog(e) {
-    if (e.detail.action === "confirm") {
-      this.hass.callService('button', 'press', {
-        entity_id: this.config.pause_button_entity
-      });
-    }
-  }
-
-  _handleStopDialog(e) {
-    if (e.detail.action === "confirm") {
-      this.hass.callService('button', 'press', {
-        entity_id: this.config.stop_button_entity
-      });
-    }
-  }
-
-  _toggleLight() {
-    this.hass.callService('light', 'toggle', {
-      entity_id: this.config.chamber_light_entity
-    });
-  }
-
-  _toggleFan() {
-    this.hass.callService('fan', 'toggle', {
-      entity_id: this.config.aux_fan_entity
-    });
-  }
-
-  firstUpdated() {
-    // Setup dialog event listeners
-    const pauseDialog = this.shadowRoot?.querySelector('#pauseDialog');
-    const stopDialog = this.shadowRoot?.querySelector('#stopDialog');
-    
-    if (pauseDialog) {
-      pauseDialog.addEventListener('closed', (e) => this._handlePauseDialog(e));
-    }
-    
-    if (stopDialog) {
-      stopDialog.addEventListener('closed', (e) => this._handleStopDialog(e));
-    }
-
-    // Setup button click handlers
-    const pauseButton = this.shadowRoot?.querySelector('.btn-pause');
-    const stopButton = this.shadowRoot?.querySelector('.btn-stop');
-
-    if (pauseButton) {
-      pauseButton.addEventListener('click', () => {
-        if (isPaused(this.hass, this.config)) {
-          // Resume immediately if paused
-          this.hass.callService('button', 'press', {
-            entity_id: this.config.resume_button_entity
-          });
-        } else {
-          // Show confirmation for pause
-          pauseDialog?.show();
-        }
-      });
-    }
-    
-    if (stopButton) {
-      stopButton.addEventListener('click', () => {
-        stopDialog?.show();
-      });
-    }
-  }
-
   render() {
     if (!this.hass || !this.config) {
       return html``;
@@ -169,6 +105,11 @@ class PrintWatchCard extends LitElement {
 
     const entities = getEntityStates(this.hass, this.config);
     const amsSlots = getAmsSlots(this.hass, this.config);
+    
+    const setDialogConfig = (config) => {
+      this._dialogConfig = config;
+      this.requestUpdate();
+    };
 
     return cardTemplate({
       entities,
@@ -180,7 +121,9 @@ class PrintWatchCard extends LitElement {
       _cameraError: this._cameraError,
       isOnline: this.isOnline(),
       handleImageError: () => this.handleImageError(),
-      handleImageLoad: () => this.handleImageLoad()
+      handleImageLoad: () => this.handleImageLoad(),
+      dialogConfig: this._dialogConfig,
+      setDialogConfig
     });
   }
 
@@ -188,11 +131,8 @@ class PrintWatchCard extends LitElement {
   getCardSize() {
     return 6;
   }
-
-  // This is used by the Home Assistant card picker
-  static getStubConfig() {
-    return DEFAULT_CONFIG;
-  }
 }
+
+customElements.define('printwatch-card', PrintWatchCard);
 
 export default PrintWatchCard;

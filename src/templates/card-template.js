@@ -15,7 +15,9 @@ export const cardTemplate = (context) => {
     _toggleFan, 
     _cameraError, 
     isOnline,
-    formatters 
+    formatters,
+    dialogConfig,
+    setDialogConfig 
   } = context;
 
   const controls = {
@@ -24,7 +26,7 @@ export const cardTemplate = (context) => {
     hasFan: !!entities.aux_fan_entity,
     onLightToggle: _toggleLight,
     onFanToggle: _toggleFan,
-    hass // Pass hass to header for time formatting
+    hass
   };
 
   const cameraProps = {
@@ -49,7 +51,7 @@ export const cardTemplate = (context) => {
         onStop: () => context.handleStopDialog(),
         onImageError: context.handleImageError
       })}
-      ${temperatureDisplayTemplate(entities, hass)}
+      ${temperatureDisplayTemplate(entities, hass, dialogConfig, setDialogConfig)}
       ${materialSlotsTemplate(amsSlots)}
     </div>
   `;

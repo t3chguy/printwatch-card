@@ -233,7 +233,7 @@ export const cardStyles = css`
   }
 
   /* Temperature Display */
-  .temperatures {
+    .temperatures {
     display: flex;
     justify-content: space-around;
     width: 100%;
@@ -259,12 +259,75 @@ export const cardStyles = css`
     display: flex;
     flex-direction: column;
     align-items: center;
+    cursor: pointer;
+    padding: 12px;
+    border-radius: 12px;
+    transition: background-color 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .temp-item:hover {
+    background-color: var(--secondary-background-color);
+  }
+
+  .temp-item:active {
+    background-color: var(--primary-color);
+    opacity: 0.8;
   }
 
   .temp-value {
     font-size: 32px;
     font-weight: 500;
     margin-bottom: 4px;
+  }
+
+  /* Dialog Styles */
+  .dialog-content {
+    padding: 20px;
+    min-width: 300px;
+    box-sizing: border-box;
+  }
+
+  ha-dialog {
+    --mdc-dialog-min-width: 320px;
+    --mdc-dialog-max-width: 480px;
+    --ha-dialog-border-radius: 12px;
+    --dialog-content-padding: 0;
+  }
+
+  .temp-input {
+    display: block;
+    width: 100%;
+    margin: 8px 0;
+  }
+
+  .speed-select {
+    display: block;
+    width: 100%;
+    margin: 8px 0;
+  }
+
+  .range-limits {
+    color: var(--secondary-text-color);
+    font-size: 14px;
+    margin-top: 8px;
+    text-align: center;
+  }
+
+  mwc-button.save-button {
+    --mdc-theme-primary: var(--primary-color);
+  }
+
+  mwc-button.cancel-button {
+    --mdc-theme-primary: var(--secondary-text-color);
+  }
+
+  ha-textfield {
+    width: 100%;
+  }
+
+  ha-select {
+    width: 100%;
   }
 
   /* Materials */
