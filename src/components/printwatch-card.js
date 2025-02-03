@@ -5,6 +5,7 @@ import { cardStyles } from '../styles/card-styles';
 import { formatDuration, formatEndTime } from '../utils/formatters';
 import { isPrinting, isPaused, getAmsSlots, getEntityStates } from '../utils/state-helpers';
 import { DEFAULT_CONFIG, DEFAULT_CAMERA_REFRESH_RATE } from '../constants/config';
+import { localize } from '../utils/localize';
 
 class PrintWatchCard extends LitElement {
   static get properties() {
@@ -125,8 +126,8 @@ class PrintWatchCard extends LitElement {
     this._confirmDialog = {
       open: true,
       type: 'pause',
-      title: this.hass.localize('ui.card.printwatch.dialogs.pause.title'),
-      message: this.hass.localize('ui.card.printwatch.dialogs.pause.message'),
+      title: localize.t('dialogs.pause.title'),
+      message: localize.t('dialogs.pause.message'),
       onConfirm: () => {
         const entity = isPaused(this.hass, this.config) 
           ? this.config.resume_button_entity 
@@ -148,8 +149,8 @@ class PrintWatchCard extends LitElement {
     this._confirmDialog = {
       open: true,
       type: 'stop',
-      title: this.hass.localize('ui.card.printwatch.dialogs.stop.title'),
-      message: this.hass.localize('ui.card.printwatch.dialogs.stop.message'),
+      title: localize.t('dialogs.stop.title'),
+      message: localize.t('dialogs.stop.message'),
       onConfirm: () => {
         this.hass.callService('button', 'press', {
           entity_id: this.config.stop_button_entity
