@@ -8,7 +8,8 @@
         "complete": "Complete",
         "offline": "Offline",
         "unknown": "Unknown",
-        "running": "Running"
+        "running": "Running",
+        "finish": "Finished"
       }
     }
   },
@@ -34,13 +35,24 @@
         "temperatures": {
           "bed": "Bed",
           "nozzle": "Nozzle",
-          "speed": "Speed"
+          "speed": "Speed",
+          "bed_target": "Set Bed Temperature",
+          "nozzle_target": "Set Nozzle Temperature",
+          "speed_profile": "Set Print Speed",
+          "range": "Range: {min}°C - {max}°C"
         },
         "controls": {
           "pause": "Pause",
           "resume": "Resume",
           "stop": "Stop",
-          "cancel": "Cancel"
+          "cancel": "Cancel",
+          "save": "Save"
+        },
+        "speed_profiles": {
+          "silent": "Silent",
+          "standard": "Standard",
+          "sport": "Sport",
+          "ludicrous": "Ludicrous"
         },
         "dialogs": {
           "pause": {

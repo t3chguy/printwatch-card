@@ -18,10 +18,10 @@ A feature-rich Home Assistant card for monitoring and controlling your P1S 3D pr
 - 🎨 AMS/Material status visualization including current filament
 - 💡 Quick controls for chamber light and auxiliary fan
 - ⏯️ Print control buttons (pause/resume/stop) with [confirmation dialogs](assets/pause.png)
-- 🎛️ Speed profile monitoring (controls to come)
+- 🎛️ Speed profile monitoring and control
 - ⚡ Local API (LAN Mode)
 - 🌑 Native Theme support
-- 🌡️ Real-time temperature monitoring for bed and nozzle
+- 🌡️ Real-time temperature monitoring and control for bed and nozzle
 - 📷 G-Code preview image (requires HA Bambu Lab plugin update)
 - 🏷️ Display print weight and length details
 -🌍 Localization support (initial translations in German, more contributions welcome!)
@@ -80,7 +80,9 @@ total_layers_entity: sensor.p1s_total_layer_count
 remaining_time_entity: sensor.p1s_remaining_time
 bed_temp_entity: sensor.p1s_bed_temperature
 nozzle_temp_entity: sensor.p1s_nozzle_temperature
-speed_profile_entity: sensor.p1s_speed_profile
+bed_target_temp_entity: number.p1s_bed_target_temperature
+nozzle_target_temp_entity: number.p1s_nozzle_target_temperature
+speed_profile_entity: select.p1s_printing_speed
 ams_slot1_entity: sensor.p1s_ams_tray_1
 ams_slot2_entity: sensor.p1s_ams_tray_2
 ams_slot3_entity: sensor.p1s_ams_tray_3

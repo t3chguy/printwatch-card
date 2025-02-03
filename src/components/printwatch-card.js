@@ -1,9 +1,11 @@
+// src/components/printwatch-card.js
 import { LitElement, html } from 'lit';
 import { cardTemplate } from '../templates/card-template';
 import { cardStyles } from '../styles/card-styles';
 import { formatDuration, formatEndTime } from '../utils/formatters';
 import { isPrinting, isPaused, getAmsSlots, getEntityStates } from '../utils/state-helpers';
 import { DEFAULT_CONFIG, DEFAULT_CAMERA_REFRESH_RATE } from '../constants/config';
+import { localize } from '../utils/localize';
 
 class PrintWatchCard extends LitElement {
   static get properties() {
@@ -13,6 +15,8 @@ class PrintWatchCard extends LitElement {
       _lastCameraUpdate: { type: Number },
       _cameraUpdateInterval: { type: Number },
       _cameraError: { type: Boolean },
+      _dialogConfig: { state: true },
+      _confirmDialog: { state: true }
     };
   }
 
@@ -25,6 +29,8 @@ class PrintWatchCard extends LitElement {
     this._lastCameraUpdate = 0;
     this._cameraUpdateInterval = DEFAULT_CAMERA_REFRESH_RATE;
     this._cameraError = false;
+    this._dialogConfig = { open: false };
+    this._confirmDialog = { open: false };
     this.formatters = {
       formatDuration,
       formatEndTime
@@ -40,7 +46,7 @@ class PrintWatchCard extends LitElement {
   }
 
   isOnline() {
-    const onlineEntity = this.hass.states[this.config.online_entity];
+    const onlineEntity = this.hass?.states[this.config.online_entity];
     return onlineEntity?.state === 'on';
   }
 
@@ -60,6 +66,26 @@ class PrintWatchCard extends LitElement {
 
   handleImageLoad() {
     this._cameraError = false;
+  }
+
+  _toggleLight() {
+    const lightEntity = this.hass.states[this.config.chamber_light_entity];
+    if (!lightEntity) return;
+
+    const service = lightEntity.state === 'on' ? 'turn_off' : 'turn_on';
+    this.hass.callService('light', service, {
+      entity_id: this.config.chamber_light_entity,
+    });
+  }
+
+  _toggleFan() {
+    const fanEntity = this.hass.states[this.config.aux_fan_entity];
+    if (!fanEntity) return;
+
+    const service = fanEntity.state === 'on' ? 'turn_off' : 'turn_on';
+    this.hass.callService('fan', service, {
+      entity_id: this.config.aux_fan_entity,
+    });
   }
 
   updated(changedProps) {
@@ -96,70 +122,46 @@ class PrintWatchCard extends LitElement {
     }
   }
 
-  _handlePauseDialog(e) {
-    if (e.detail.action === "confirm") {
-      this.hass.callService('button', 'press', {
-        entity_id: this.config.pause_button_entity
-      });
-    }
+  handlePauseDialog() {
+    this._confirmDialog = {
+      open: true,
+      type: 'pause',
+      title: localize.t('dialogs.pause.title'),
+      message: localize.t('dialogs.pause.message'),
+      onConfirm: () => {
+        const entity = isPaused(this.hass, this.config) 
+          ? this.config.resume_button_entity 
+          : this.config.pause_button_entity;
+        
+        this.hass.callService('button', 'press', {
+          entity_id: entity
+        });
+        this._confirmDialog = { open: false };
+      },
+      onCancel: () => {
+        this._confirmDialog = { open: false };
+      }
+    };
+    this.requestUpdate();
   }
 
-  _handleStopDialog(e) {
-    if (e.detail.action === "confirm") {
-      this.hass.callService('button', 'press', {
-        entity_id: this.config.stop_button_entity
-      });
-    }
-  }
-
-  _toggleLight() {
-    this.hass.callService('light', 'toggle', {
-      entity_id: this.config.chamber_light_entity
-    });
-  }
-
-  _toggleFan() {
-    this.hass.callService('fan', 'toggle', {
-      entity_id: this.config.aux_fan_entity
-    });
-  }
-
-  firstUpdated() {
-    // Setup dialog event listeners
-    const pauseDialog = this.shadowRoot?.querySelector('#pauseDialog');
-    const stopDialog = this.shadowRoot?.querySelector('#stopDialog');
-    
-    if (pauseDialog) {
-      pauseDialog.addEventListener('closed', (e) => this._handlePauseDialog(e));
-    }
-    
-    if (stopDialog) {
-      stopDialog.addEventListener('closed', (e) => this._handleStopDialog(e));
-    }
-
-    // Setup button click handlers
-    const pauseButton = this.shadowRoot?.querySelector('.btn-pause');
-    const stopButton = this.shadowRoot?.querySelector('.btn-stop');
-
-    if (pauseButton) {
-      pauseButton.addEventListener('click', () => {
-        if (isPaused(this.hass, this.config)) {
-          // Resume immediately if paused
-          this.hass.callService('button', 'press', {
-            entity_id: this.config.resume_button_entity
-          });
-        } else {
-          // Show confirmation for pause
-          pauseDialog?.show();
-        }
-      });
-    }
-    
-    if (stopButton) {
-      stopButton.addEventListener('click', () => {
-        stopDialog?.show();
-      });
-    }
+  handleStopDialog() {
+    this._confirmDialog = {
+      open: true,
+      type: 'stop',
+      title: localize.t('dialogs.stop.title'),
+      message: localize.t('dialogs.stop.message'),
+      onConfirm: () => {
+        this.hass.callService('button', 'press', {
+          entity_id: this.config.stop_button_entity
+        });
+        this._confirmDialog = { open: false };
+      },
+      onCancel: () => {
+        this._confirmDialog = { open: false };
+      }
+    };
+    this.requestUpdate();
   }
 
   render() {
@@ -169,6 +171,11 @@ class PrintWatchCard extends LitElement {
 
     const entities = getEntityStates(this.hass, this.config);
     const amsSlots = getAmsSlots(this.hass, this.config);
+    
+    const setDialogConfig = (config) => {
+      this._dialogConfig = config;
+      this.requestUpdate();
+    };
 
     return cardTemplate({
       entities,
@@ -180,7 +187,12 @@ class PrintWatchCard extends LitElement {
       _cameraError: this._cameraError,
       isOnline: this.isOnline(),
       handleImageError: () => this.handleImageError(),
-      handleImageLoad: () => this.handleImageLoad()
+      handleImageLoad: () => this.handleImageLoad(),
+      dialogConfig: this._dialogConfig,
+      confirmDialog: this._confirmDialog,
+      setDialogConfig,
+      handlePauseDialog: () => this.handlePauseDialog(),
+      handleStopDialog: () => this.handleStopDialog(),
     });
   }
 
@@ -188,11 +200,8 @@ class PrintWatchCard extends LitElement {
   getCardSize() {
     return 6;
   }
-
-  // This is used by the Home Assistant card picker
-  static getStubConfig() {
-    return DEFAULT_CONFIG;
-  }
 }
+
+customElements.define('printwatch-card', PrintWatchCard);
 
 export default PrintWatchCard;

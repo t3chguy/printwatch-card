@@ -1,6 +1,6 @@
 import { html } from 'lit';
 import { localize } from '../../utils/localize';
-import { formatDuration, formatEndTime } from '../../utils/formatters';
+import { formatDuration } from '../../utils/formatters';
 
 export const headerTemplate = (entities, controls) => html`
   <div class="header">
@@ -20,8 +20,7 @@ export const headerTemplate = (entities, controls) => html`
           <div class="progress-fill" style="width: ${entities.progress}%"></div>
         </div>
         <div class="layer-info">
-          ${localize.t('time.left')}: ${formatDuration(entities.remainingTime)}, 
-          ${formatEndTime(entities.remainingTime, controls.hass)}
+          ${localize.t('time.left')}: ${formatDuration(entities.remainingTime)}
         </div>
       ` : ''}
     </div>
@@ -32,7 +31,7 @@ export const headerTemplate = (entities, controls) => html`
       >
         <ha-icon icon="mdi:lightbulb"></ha-icon>
       </button>
-      ${controls.hasFan ? html`
+      ${entities.aux_fan_entity ? html`
         <button 
           class="icon-button ${controls.fanState === 'on' ? 'active' : ''}"
           @click=${controls.onFanToggle}

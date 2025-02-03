@@ -26,7 +26,11 @@ export const isPaused = (hass, config) =>
   hass.states[config.print_status_entity]?.state === 'pause';
 
 export const getAmsSlots = (hass, config) => {
-  const amsSlots = [
+  // First, check for explicit external spool configuration
+  const externalSpoolEntity = config.external_spool_entity;
+  
+  // Check if any AMS slot entities are defined and not null
+  const amsSlotEntities = [
     config.ams_slot1_entity,
     config.ams_slot2_entity,
     config.ams_slot3_entity,
@@ -43,42 +47,44 @@ export const getAmsSlots = (hass, config) => {
     config.ams_slot14_entity,
     config.ams_slot15_entity,
     config.ams_slot16_entity
-  ];
+  ].filter(entity => entity != null && entity.trim() !== '');
 
-  // Check for AMS system
-  const hasAms = config.ams_slot1_entity && 
-                 hass.states[config.ams_slot1_entity]?.attributes?.type;
-
-  if (hasAms) {
-    return amsSlots
-      .map(entity => {
-        const state = hass.states[entity];
-        if (!state) return null;
-        
-        return {
-          type: state.state || 'Empty',
-          color: state.attributes?.color || '#E0E0E0',
-          empty: state.attributes?.empty || false,
-          active: state.attributes?.active || false,
-          name: state.attributes?.name || 'Unknown'
-        };
-      })
-      .filter(Boolean);
+  // If external spool is defined and has a valid state, use it
+  if (externalSpoolEntity) {
+    const externalSpool = hass.states[externalSpoolEntity];
+    if (externalSpool?.state && externalSpool.state !== 'unknown') {
+      return [{
+        type: externalSpool.state || 'External Spool',
+        color: externalSpool.attributes?.color || '#E0E0E0',
+        empty: false,
+        name: externalSpool.attributes?.name || 'External Spool',
+        active: true
+      }];
+    }
   }
 
-  // Check for external spool
-  const externalSpool = hass.states[config.external_spool_entity];
-  if (externalSpool?.state !== 'unknown') {
-    return [{
-      type: externalSpool.state,
-      color: externalSpool.attributes?.color || '#E0E0E0',
-      empty: false,
-      name: externalSpool.attributes?.name || 'External Spool',
-      active: null
-    }];
+  // If no AMS slot entities are defined, return empty array
+  if (amsSlotEntities.length === 0) {
+    return [];
   }
 
-  return [];
+  // Process AMS slots if they exist
+  const processedSlots = amsSlotEntities
+    .map(entity => {
+      const state = hass.states[entity];
+      if (!state) return null;
+      
+      return {
+        type: state.state || 'Empty',
+        color: state.attributes?.color || '#E0E0E0',
+        empty: state.attributes?.empty || false,
+        active: state.attributes?.active || false,
+        name: state.attributes?.name || 'Unknown'
+      };
+    })
+    .filter(Boolean);
+
+  return processedSlots.length > 0 ? processedSlots : [];
 };
 
 const getLastPrintName = (hass, config) => {
@@ -107,14 +113,18 @@ export const getEntityStates = (hass, config) => {
     remainingTime: parseInt(getState(config.remaining_time_entity)),
     bedTemp: parseFloat(getState(config.bed_temp_entity)),
     nozzleTemp: parseFloat(getState(config.nozzle_temp_entity)),
-    speedProfile: hass.states[config.speed_profile_entity]?.attributes?.modifier || 100,
-    externalSpoolType: getState(config.external_spool_entity, 'Unknown'),
-    externalSpoolColor: hass.states[config.external_spool_entity]?.attributes?.color || '#E0E0E0',
+    speedProfile: getState(config.speed_profile_entity, 'standard'),
     isPrinting: isPrinting(hass, config),
     isPaused: isPaused(hass, config),
     lastPrintName: getLastPrintName(hass, config),
+    // Pass through the entity IDs needed for service calls
+    bed_temp_entity: config.bed_temp_entity,
+    nozzle_temp_entity: config.nozzle_temp_entity,
+    bed_target_temp_entity: config.bed_target_temp_entity,
+    nozzle_target_temp_entity: config.nozzle_target_temp_entity,
+    speed_profile_entity: config.speed_profile_entity,
     chamber_light_entity: config.chamber_light_entity,
-    aux_fan_entity: hass.states[config.aux_fan_entity] ? config.aux_fan_entity : null,
+    aux_fan_entity: config.aux_fan_entity && hass.states[config.aux_fan_entity] ? config.aux_fan_entity : null,
     camera_entity: config.camera_entity,
     cover_image_entity: config.cover_image_entity,
     print_weight_entity: parseInt(getState(config.print_weight_entity)),
