@@ -1,10 +1,12 @@
+// src/templates/card-template.js
 import { html } from 'lit';
 import { headerTemplate } from './components/header';
 import { cameraFeedTemplate } from './components/camera-feed';
 import { printStatusTemplate } from './components/print-status';
 import { temperatureDisplayTemplate } from './components/temperature-display';
 import { materialSlotsTemplate } from './components/material-slots';
-import { dialogTemplate } from './components/dialog';
+import { temperatureDialogTemplate } from './components/temperature-controls';
+import { confirmDialogTemplate } from './components/confirm-dialog';
 
 export const cardTemplate = (context) => {
   const { 
@@ -17,8 +19,13 @@ export const cardTemplate = (context) => {
     isOnline,
     formatters,
     dialogConfig,
-    setDialogConfig 
+    confirmDialog,
+    setDialogConfig,
+    handlePauseDialog,
+    handleStopDialog
   } = context;
+
+  if (!entities || !hass) return html``;
 
   const controls = {
     lightState: hass.states[entities.chamber_light_entity]?.state,
@@ -39,20 +46,19 @@ export const cardTemplate = (context) => {
   };
 
   return html`
-    ${dialogTemplate('pauseDialog', 'pause')}
-    ${dialogTemplate('stopDialog', 'stop')}
-
     <div class="card">
       ${headerTemplate(entities, controls)}
       ${cameraFeedTemplate(cameraProps)}
       ${printStatusTemplate(entities, {
         hass,
-        onPause: () => context.handlePauseDialog(),
-        onStop: () => context.handleStopDialog(),
+        onPause: handlePauseDialog,
+        onStop: handleStopDialog,
         onImageError: context.handleImageError
       })}
       ${temperatureDisplayTemplate(entities, hass, dialogConfig, setDialogConfig)}
       ${materialSlotsTemplate(amsSlots)}
+      ${temperatureDialogTemplate(dialogConfig, hass)}
+      ${confirmDialogTemplate(confirmDialog)}
     </div>
   `;
 };

@@ -1,7 +1,10 @@
+// src/templates/components/print-status.js
 import { html } from 'lit';
 import { localize } from '../../utils/localize';
 
 export const printStatusTemplate = (entities, config) => {
+  if (!entities || !config || !config.hass) return html``;
+
   if (!entities.isPrinting) {
     return html`
       <div class="not-printing">
@@ -33,10 +36,14 @@ export const printStatusTemplate = (entities, config) => {
         <div class="print-details">
           <h3>${entities.taskName}</h3>
           <div class="print-stats">
-            ${localize.t('print.length')}: ${entities.print_length_entity} 
-            ${config.hass.states['sensor.p1s_print_length']?.attributes?.unit_of_measurement || ''} | 
-            ${localize.t('print.weight')}: ${entities.print_weight_entity} 
-            ${config.hass.states['sensor.p1s_print_weight']?.attributes?.unit_of_measurement || ''}
+            ${entities.print_length_entity !== undefined ? html`
+              ${localize.t('print.length')}: ${entities.print_length_entity} 
+              ${config.hass.states['sensor.p1s_print_length']?.attributes?.unit_of_measurement || ''} |
+            ` : ''}
+            ${entities.print_weight_entity !== undefined ? html`
+              ${localize.t('print.weight')}: ${entities.print_weight_entity} 
+              ${config.hass.states['sensor.p1s_print_weight']?.attributes?.unit_of_measurement || ''}
+            ` : ''}
           </div>
 
           <div class="controls">

@@ -1,3 +1,4 @@
+// src/components/printwatch-card.js
 import { LitElement, html } from 'lit';
 import { cardTemplate } from '../templates/card-template';
 import { cardStyles } from '../styles/card-styles';
@@ -13,7 +14,8 @@ class PrintWatchCard extends LitElement {
       _lastCameraUpdate: { type: Number },
       _cameraUpdateInterval: { type: Number },
       _cameraError: { type: Boolean },
-      _dialogConfig: { state: true }
+      _dialogConfig: { state: true },
+      _confirmDialog: { state: true }
     };
   }
 
@@ -27,6 +29,7 @@ class PrintWatchCard extends LitElement {
     this._cameraUpdateInterval = DEFAULT_CAMERA_REFRESH_RATE;
     this._cameraError = false;
     this._dialogConfig = { open: false };
+    this._confirmDialog = { open: false };
     this.formatters = {
       formatDuration,
       formatEndTime
@@ -42,7 +45,7 @@ class PrintWatchCard extends LitElement {
   }
 
   isOnline() {
-    const onlineEntity = this.hass.states[this.config.online_entity];
+    const onlineEntity = this.hass?.states[this.config.online_entity];
     return onlineEntity?.state === 'on';
   }
 
@@ -118,6 +121,48 @@ class PrintWatchCard extends LitElement {
     }
   }
 
+  handlePauseDialog() {
+    this._confirmDialog = {
+      open: true,
+      type: 'pause',
+      title: this.hass.localize('ui.card.printwatch.dialogs.pause.title'),
+      message: this.hass.localize('ui.card.printwatch.dialogs.pause.message'),
+      onConfirm: () => {
+        const entity = isPaused(this.hass, this.config) 
+          ? this.config.resume_button_entity 
+          : this.config.pause_button_entity;
+        
+        this.hass.callService('button', 'press', {
+          entity_id: entity
+        });
+        this._confirmDialog = { open: false };
+      },
+      onCancel: () => {
+        this._confirmDialog = { open: false };
+      }
+    };
+    this.requestUpdate();
+  }
+
+  handleStopDialog() {
+    this._confirmDialog = {
+      open: true,
+      type: 'stop',
+      title: this.hass.localize('ui.card.printwatch.dialogs.stop.title'),
+      message: this.hass.localize('ui.card.printwatch.dialogs.stop.message'),
+      onConfirm: () => {
+        this.hass.callService('button', 'press', {
+          entity_id: this.config.stop_button_entity
+        });
+        this._confirmDialog = { open: false };
+      },
+      onCancel: () => {
+        this._confirmDialog = { open: false };
+      }
+    };
+    this.requestUpdate();
+  }
+
   render() {
     if (!this.hass || !this.config) {
       return html``;
@@ -143,7 +188,10 @@ class PrintWatchCard extends LitElement {
       handleImageError: () => this.handleImageError(),
       handleImageLoad: () => this.handleImageLoad(),
       dialogConfig: this._dialogConfig,
-      setDialogConfig
+      confirmDialog: this._confirmDialog,
+      setDialogConfig,
+      handlePauseDialog: () => this.handlePauseDialog(),
+      handleStopDialog: () => this.handleStopDialog(),
     });
   }
 
