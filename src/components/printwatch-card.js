@@ -78,6 +78,16 @@ class PrintWatchCard extends LitElement {
     });
   }
 
+  _toggleAuxLight() {
+    const lightEntity = this.hass.states[this.config.aux_light_entity];
+    if (!lightEntity) return;
+
+    const service = lightEntity.state === 'on' ? 'turn_off' : 'turn_on';
+    this.hass.callService('light', service, {
+      entity_id: this.config.aux_light_entity,
+    });
+  }
+
   _toggleFan() {
     const fanEntity = this.hass.states[this.config.aux_fan_entity];
     if (!fanEntity) return;
@@ -105,13 +115,6 @@ class PrintWatchCard extends LitElement {
     this._lastCameraUpdate = Date.now();
     
     const timestamp = new Date().getTime();
-    const cameraImg = this.shadowRoot?.querySelector('.camera-feed img');
-    if (cameraImg) {
-      const cameraEntity = this.hass.states[this.config.camera_entity];
-      if (cameraEntity?.attributes?.entity_picture) {
-        cameraImg.src = `${cameraEntity.attributes.entity_picture}&t=${timestamp}`;
-      }
-    }
 
     const coverImg = this.shadowRoot?.querySelector('.preview-image img');
     if (coverImg) {
@@ -183,6 +186,7 @@ class PrintWatchCard extends LitElement {
       amsSlots,
       formatters: this.formatters,
       _toggleLight: () => this._toggleLight(),
+      _toggleAuxLight: () => this._toggleAuxLight(),
       _toggleFan: () => this._toggleFan(),
       _cameraError: this._cameraError,
       isOnline: this.isOnline(),
@@ -202,6 +206,6 @@ class PrintWatchCard extends LitElement {
   }
 }
 
-customElements.define('printwatch-card', PrintWatchCard);
+customElements.define('printwatch-card2', PrintWatchCard);
 
 export default PrintWatchCard;

@@ -237,9 +237,14 @@ export const cardStyles = css`
     display: flex;
     justify-content: space-around;
     width: 100%;
-    margin-bottom: 32px;
-    padding-bottom: 32px;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
     position: relative;
+  }
+    
+  .temperatures + .materials {
+      margin-top: 16px;
+      padding-top: 16px;
   }
 
   .temperatures::after {

@@ -9,7 +9,8 @@
         "offline": "Offline",
         "unknown": "Unknown",
         "running": "Running",
-        "finish": "Finished"
+        "finish": "Finished",
+        "standby": "Standby"
       }
     }
   },
@@ -35,6 +36,7 @@
         "temperatures": {
           "bed": "Bed",
           "nozzle": "Nozzle",
+          "chamber": "Chamber",
           "speed": "Speed",
           "bed_target": "Set Bed Temperature",
           "nozzle_target": "Set Nozzle Temperature",

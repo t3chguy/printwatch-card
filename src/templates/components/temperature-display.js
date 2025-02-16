@@ -44,6 +44,37 @@ export const temperatureDisplayTemplate = (entities, hass, dialogConfig = {}, se
   // Get temperature units from sensors
   const bedTempUnit = hass.states[entities.bed_temp_entity]?.attributes?.unit_of_measurement || '°C';
   const nozzleTempUnit = hass.states[entities.nozzle_temp_entity]?.attributes?.unit_of_measurement || '°C';
+  const chamberTempUnit = hass.states[entities.chamber_temp_entity]?.attributes?.unit_of_measurement || '°C';
+
+  let chamberTile;
+  if (entities.chamber_temp_entity) {
+    chamberTile = html`
+      <div
+          class="temp-item"
+      >
+        <div class="temp-value">
+          ${formatTemperature(entities.chamberTemp, chamberTempUnit)}
+        </div>
+        <div>${localize.t('temperatures.chamber')}</div>
+      </div>
+    `;
+  }
+
+  let speedTile;
+  if (hass.states[entities.speed_profile_entity]) {
+    speedTile = html`
+      <div
+          class="temp-item"
+          @click=${() => handleControlClick('speed', hass.states[entities.speed_profile_entity]?.state || 'standard', entities.speed_profile_entity)}
+      >
+        <div class="temp-value">
+          ${(hass.states[entities.speed_profile_entity]?.state || 'standard').charAt(0).toUpperCase() +
+          (hass.states[entities.speed_profile_entity]?.state || 'standard').slice(1)}
+        </div>
+        <div>${localize.t('temperatures.speed')}</div>
+      </div>
+    `;
+  }
 
   return html`
     <div class="temperatures">
@@ -67,16 +98,8 @@ export const temperatureDisplayTemplate = (entities, hass, dialogConfig = {}, se
         <div>${localize.t('temperatures.nozzle')}</div>
       </div>
 
-      <div 
-        class="temp-item"
-        @click=${() => handleControlClick('speed', hass.states[entities.speed_profile_entity]?.state || 'standard', entities.speed_profile_entity)}
-      >
-        <div class="temp-value">
-          ${(hass.states[entities.speed_profile_entity]?.state || 'standard').charAt(0).toUpperCase() + 
-            (hass.states[entities.speed_profile_entity]?.state || 'standard').slice(1)}
-        </div>
-        <div>${localize.t('temperatures.speed')}</div>
-      </div>
+      ${chamberTile}
+      ${speedTile}
     </div>
 
     ${temperatureDialogTemplate(dialogConfig, hass)}

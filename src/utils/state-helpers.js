@@ -1,5 +1,5 @@
 const PRINTING_STATES = ['printing', 'running', 'pause'];
-const NON_PRINTING_STATES = ['idle', 'offline', 'unknown'];
+const NON_PRINTING_STATES = ['idle', 'offline', 'standby', 'unknown'];
 const PRINTING_PROCESS_STATES = [
   'heatbed_preheating',
   'heating_hotend',
@@ -52,7 +52,7 @@ export const getAmsSlots = (hass, config) => {
   // If external spool is defined and has a valid state, use it
   if (externalSpoolEntity) {
     const externalSpool = hass.states[externalSpoolEntity];
-    if (externalSpool?.state && externalSpool.state !== 'unknown') {
+    if (externalSpool?.state) {
       return [{
         type: externalSpool.state || 'External Spool',
         color: externalSpool.attributes?.color || '#E0E0E0',
@@ -113,17 +113,20 @@ export const getEntityStates = (hass, config) => {
     remainingTime: parseInt(getState(config.remaining_time_entity)),
     bedTemp: parseFloat(getState(config.bed_temp_entity)),
     nozzleTemp: parseFloat(getState(config.nozzle_temp_entity)),
-    speedProfile: getState(config.speed_profile_entity, 'standard'),
+    chamberTemp: parseFloat(getState(config.chamber_temp_entity)),
+    speedProfile: getState(config.speed_profile_entity),
     isPrinting: isPrinting(hass, config),
     isPaused: isPaused(hass, config),
     lastPrintName: getLastPrintName(hass, config),
     // Pass through the entity IDs needed for service calls
     bed_temp_entity: config.bed_temp_entity,
     nozzle_temp_entity: config.nozzle_temp_entity,
+    chamber_temp_entity: config.chamber_temp_entity,
     bed_target_temp_entity: config.bed_target_temp_entity,
     nozzle_target_temp_entity: config.nozzle_target_temp_entity,
     speed_profile_entity: config.speed_profile_entity,
     chamber_light_entity: config.chamber_light_entity,
+    aux_light_entity: config.aux_light_entity,
     aux_fan_entity: config.aux_fan_entity && hass.states[config.aux_fan_entity] ? config.aux_fan_entity : null,
     camera_entity: config.camera_entity,
     cover_image_entity: config.cover_image_entity,
