@@ -9,22 +9,22 @@ We welcome bug reports, feature suggestions, and pull requests to improve the pr
    ```sh
    git clone https://github.com/yourusername/printwatch-card.git
    cd printwatch-card
-```
+   ```
 
 2. **Install dependencies**
-  ```sh
-    npm install
-  ```
+   ```sh
+   npm install
+   ```
 
 3. Run in development mode
-  ```sh
-    npm run watch
-  ```
+   ```sh
+   npm run watch
+   ```
 
-  ## 📝 Coding Guidelines
-  * Follow the existing code style (we use Prettier and ESLint)
-  * Write clear, self-documenting code
-  * Keep PRs focused on a single change when possible
+## 📝 Coding Guidelines
+* Follow the existing code style (we use Prettier and ESLint)
+* Write clear, self-documenting code
+* Keep PRs focused on a single change when possible
 
 
 ## 🐛 Reporting Issues
